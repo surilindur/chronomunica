@@ -81,8 +81,10 @@ export async function executeAndSerializeMultiple(configs: string, queries: stri
       if (!query.isFile()) {
         continue;
       }
+      const configPath = join(config.path, config.name);
+      const queryPath = join(query.path, query.name);
       const outputFilePath = join(output, `${config.name.split('.')[0]}-${query.name.split('.')[0]}.json`);
-      await executeAndSerialize(config.path, query.path, outputFilePath);
+      await executeAndSerialize(configPath, queryPath, outputFilePath);
     }
   }
 }
