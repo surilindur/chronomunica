@@ -1,9 +1,10 @@
 node_modules/
+components/
 
-bin/*.js
-bin/*.js.map
-bin/*.d.ts
+queries/
 
-lib/*.js
-lib/*.js.map
-lib/*.d.ts
+*.js
+*.js.map
+*.d.ts
+
+componentsjs-error-state.json

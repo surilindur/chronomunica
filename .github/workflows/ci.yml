@@ -19,5 +19,9 @@ jobs:
       with:
         node-version: 20
         cache: yarn
-    - name: Prepare application
-      run: yarn install --frozen-lockfile --ignore-engines
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile --ignore-engines --ignore-scripts
+    - name: Lint
+      run: yarn lint
+    - name: Build
+      run: yarn build

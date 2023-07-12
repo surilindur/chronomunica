@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "CommonJS",
     "lib": [
       "ESNext",
       "DOM"
@@ -11,19 +11,19 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "inlineSources": false,
-    "declaration": false,
-    "resolveJsonModule": true,
+    "declaration": true,
     "downlevelIteration": true,
     "strict": true,
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true
   },
   "include": [
-    "bin/**/*",
-    "lib/**/*"
+    "engines/*/bin/*.ts",
+    "engines/*/lib/*.ts",
+    "packages/*/bin/*.ts",
+    "packages/*/lib/*.ts"
   ],
   "exclude": [
-    "**/node_modules",
-    "**/test/*"
+    "**/node_modules"
   ]
 }

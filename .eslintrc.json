@@ -16,6 +16,7 @@
     "unicorn/no-new-array": "off",
     "unicorn/prefer-at": "off",
     "unicorn/prefer-string-replace-all": "off",
+    "unicorn/no-process-exit": "off",
     "import/no-commonjs": "off",
     "import/no-nodejs-modules": "off",
     "import/no-unassigned-import": "off",

@@ -1,0 +1,10 @@
+{
+  "name": "@solidlab/chronomunica-bindings-hash",
+  "version": "0.0.0",
+  "repository": "https://github.com/surilindur/chronomunica",
+  "author": "surilindur",
+  "license": "MIT",
+  "typings": "lib/index",
+  "private": true,
+  "lsd:module": true
+}
