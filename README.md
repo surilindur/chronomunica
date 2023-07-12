@@ -2,7 +2,9 @@
     <img alt="logo" src="./images/logo.svg" width="300">
 </p>
 
-Chronomunica is an experimental tool to measure query execution using [Comunica](https://github.com/comunica/comunica), by supplying an engine configuration file and a query and having the tool measure some aspects of query execution. The tool will use the provided configuration to create a `QueryEngine` using the `QueryEngineFactory`, and then execute the query. Please note that Chronomunica is not intended for actual use, and should be treated with caution. Thank you!
+Chronomunica is an experimental tool to measure query execution using [Comunica](https://github.com/comunica/comunica), implemented via [Components.js](https://github.com/LinkedSoftwareDependencies/Components.js). The tool can instantiate `QueryEngine` instances, execute queries with them and output collected metrics. Please note that Chronomunica is not intended for actual use, and should be treated with caution. Thank you!
+
+**The Tool does not work at the moment, I am working on it.**
 
 Currently, the tool will output:
 
@@ -18,9 +20,9 @@ The tool has not been published anywhere, but can be run locally. After cloning,
 
 The tool can then be executed:
 
-    $ yarn chronomunica --configs ./configs --queries ./queries --results ./results
+    $ yarn chronomunica --config engines/chronomunica-config/config/config-default.json
 
-The tool currently only accepts a folder for each parameter, and will execute everything in them. I will look into fixing it later.
+Various configuration files can be found in [engines/chronomunica-config/config](engines/chronomunica-config/config/).
 
 ## Issues
 
