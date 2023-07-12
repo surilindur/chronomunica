@@ -1,0 +1,9 @@
+node_modules/
+
+bin/*.js
+bin/*.js.map
+bin/*.d.ts
+
+lib/*.js
+lib/*.js.map
+lib/*.d.ts

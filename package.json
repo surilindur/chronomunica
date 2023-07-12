@@ -1,0 +1,27 @@
+{
+  "name": "@solidlab/chronomunica",
+  "version": "0.0.0",
+  "description": "Experimental tool to measure Comunica query execution",
+  "repository": "https://github.com/surilindur/chronomunica",
+  "author": "surilindur",
+  "license": "MIT",
+  "types": "lib/index",
+  "private": true,
+  "bin": {
+    "chronomunica": "bin/chronomunica.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@comunica/query-sparql": "^2.0.0"
+  },
+  "devDependencies": {
+    "@rdfjs/types": "*",
+    "@rubensworks/eslint-config": "^2.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}
