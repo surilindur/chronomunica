@@ -1,4 +1,4 @@
-import { join, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import type { IQueryExecutionManager } from '@solidlab/chronomunica-executor';
 import { ComponentsManager } from 'componentsjs';
@@ -17,11 +17,8 @@ export async function runApp(): Promise<void> {
     throw new Error('No configuration file path provided');
   }
 
-  // eslint-disable-next-line no-console
-  console.log(resolve(join(__dirname, '..')));
-
   const manager = await ComponentsManager.build({
-    mainModulePath: resolve(join(__dirname, '..')),
+    mainModulePath: resolve(__dirname, '..', '..', '..'),
     typeChecking: false,
   });
 
