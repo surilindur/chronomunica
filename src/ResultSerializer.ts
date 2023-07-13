@@ -9,7 +9,7 @@ export class ResultSerializer implements IResultSerializer {
   }
 
   public async serialize(results: Record<string, any>): Promise<void> {
-    const serializeFilename = `${results.configId}-${results.queryId}.json`;
+    const serializeFilename = `${results.configId}-${results.queryId}-${Date.now()}.json`;
     const serializationPath = resolve(this.path, serializeFilename);
     writeFileSync(serializationPath, JSON.stringify(results, undefined, 2));
   }
