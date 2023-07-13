@@ -1,0 +1,25 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica/^0.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "modules/bindings-hash.json",
+    "modules/result-serializer.json",
+    "modules/request-counter.json"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:chronomunica:runner#default",
+      "@type": "QueryRunner",
+      "bindingsHash": {
+        "@id": "urn:chronomunica:bindings-hash#default"
+      },
+      "requestCounter": {
+        "@id": "urn:chronomunica:request-counter#default"
+      },
+      "resultSerializer": {
+        "@id": "urn:chronomunica:result-serializer#default"
+      }
+    }
+  ]
+}

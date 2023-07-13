@@ -1,0 +1,12 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:chronomunica:result-serializer#default",
+      "@type": "ResultSerializer",
+      "path": "./results"
+    }
+  ]
+}
