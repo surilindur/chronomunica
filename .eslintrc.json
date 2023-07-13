@@ -11,6 +11,7 @@
     "@rubensworks"
   ],
   "rules": {
+    "no-console": "off",
     "unicorn/consistent-destructuring": "off",
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-new-array": "off",

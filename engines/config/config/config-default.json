@@ -17,6 +17,8 @@
         "@id": "urn:chronomunica:request-counter-factory#default"
       },
       "queryEngineConfig": "engines/config/config/engines/default.json",
+      "resultSerializationPath": "results",
+      "repeatExecution": 4,
       "queryFiles": [
         "queries/interactive-discover-8-2.rq"
       ]

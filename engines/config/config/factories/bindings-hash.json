@@ -6,7 +6,7 @@
     {
       "@id": "urn:chronomunica:bindings-hash-factory#default",
       "@type": "BindingsHashFactory",
-      "algorithm": "md5",
+      "algorithm": "sha256",
       "encoding": "hex"
     }
   ]

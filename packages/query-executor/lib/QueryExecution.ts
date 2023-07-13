@@ -48,7 +48,7 @@ export class QueryExecution implements IQueryExecution {
     });
   }
 
-  public metrics(error?: any): IQueryExecutionOutput {
+  public metrics(error?: string): IQueryExecutionOutput {
     return {
       hash: this.bindingsHash.digest(),
       intervals: this.intervals,
