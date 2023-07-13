@@ -2570,7 +2570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@comunica/types@npm:^2.0.0, @comunica/types@npm:^2.8.0":
+"@comunica/types@npm:^2.8.0":
   version: 2.8.0
   resolution: "@comunica/types@npm:2.8.0"
   dependencies:
@@ -2855,48 +2855,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solidlab/chronomunica-bindings-hash@^0.0.0, @solidlab/chronomunica-bindings-hash@workspace:packages/bindings-hash":
+"@solidlab/chronomunica@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@solidlab/chronomunica-bindings-hash@workspace:packages/bindings-hash"
-  dependencies:
-    "@rdfjs/types": "*"
-  languageName: unknown
-  linkType: soft
-
-"@solidlab/chronomunica-config@^0.0.0, @solidlab/chronomunica-config@workspace:engines/config":
-  version: 0.0.0-use.local
-  resolution: "@solidlab/chronomunica-config@workspace:engines/config"
-  languageName: unknown
-  linkType: soft
-
-"@solidlab/chronomunica-query-executor@^0.0.0, @solidlab/chronomunica-query-executor@workspace:packages/query-executor":
-  version: 0.0.0-use.local
-  resolution: "@solidlab/chronomunica-query-executor@workspace:packages/query-executor"
+  resolution: "@solidlab/chronomunica@workspace:."
   dependencies:
     "@comunica/query-sparql": ^2.0.0
-    "@comunica/types": ^2.0.0
-    "@solidlab/chronomunica-bindings-hash": ^0.0.0
-    "@solidlab/chronomunica-request-counter": ^0.0.0
-  languageName: unknown
-  linkType: soft
-
-"@solidlab/chronomunica-request-counter@^0.0.0, @solidlab/chronomunica-request-counter@workspace:packages/request-counter":
-  version: 0.0.0-use.local
-  resolution: "@solidlab/chronomunica-request-counter@workspace:packages/request-counter"
-  languageName: unknown
-  linkType: soft
-
-"@solidlab/chronomunica@workspace:engines/runner":
-  version: 0.0.0-use.local
-  resolution: "@solidlab/chronomunica@workspace:engines/runner"
-  dependencies:
-    "@solidlab/chronomunica-bindings-hash": ^0.0.0
-    "@solidlab/chronomunica-config": ^0.0.0
-    "@solidlab/chronomunica-query-executor": ^0.0.0
-    "@solidlab/chronomunica-request-counter": ^0.0.0
+    "@rdfjs/types": "*"
+    "@rubensworks/eslint-config": ^2.0.0
     componentsjs: ^5.0.0
-  bin:
-    chronomunica: bin/chronomunica.js
+    componentsjs-generator: ^3.0.0
+    eslint: ^8.0.0
+    typescript: ^5.0.0
   languageName: unknown
   linkType: soft
 
@@ -3902,9 +3871,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.431":
-  version: 1.4.459
-  resolution: "electron-to-chromium@npm:1.4.459"
-  checksum: 2052797a639c131e459c7d8261506b52b277c3e9c0622a1171dcc9b9dc2293c3b2b43260687d320e89a2a82264521135a525c4ed97beba43f5507583d8c0d532
+  version: 1.4.460
+  resolution: "electron-to-chromium@npm:1.4.460"
+  checksum: 332686067de5ea3d032884bd1343fd0f944c67007717da41095cbb68cfbf3668e4c9a8929940313e1ddb771ab99afaffdabd4daa99785ddea5ef5d91d63e31b9
   languageName: node
   linkType: hard
 
@@ -6626,18 +6595,6 @@ __metadata:
   checksum: 87f4164e396f0171b0a3386cc1877a817f572148ee13a7e113b238e48e8a9f2f31d009a92ec38a591ff1567d9662c6b67fd8818a2dbbaed74bc26a87a2a4a9a0
   languageName: node
   linkType: hard
-
-"root-workspace-0b6124@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "root-workspace-0b6124@workspace:."
-  dependencies:
-    "@rdfjs/types": "*"
-    "@rubensworks/eslint-config": ^2.0.0
-    componentsjs-generator: ^3.0.0
-    eslint: ^8.0.0
-    typescript: ^5.0.0
-  languageName: unknown
-  linkType: soft
 
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
