@@ -14,8 +14,7 @@
     "lint": "eslint . --ext .ts",
     "build": "yarn run build:ts && yarn run build:components",
     "build:ts": "tsc",
-    "build:components": "componentsjs-generator packages/* engines/*",
-    "prepare": "yarn run build"
+    "build:components": "componentsjs-generator packages/* engines/*"
   },
   "devDependencies": {
     "@rdfjs/types": "*",

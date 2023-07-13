@@ -27,3 +27,7 @@ jobs:
       run: yarn set version stable
     - name: Install dependencies
       run: yarn install --immutable
+    - name: Run ESLint
+      run: yarn lint
+    - name: Build packages
+      run: yarn build
