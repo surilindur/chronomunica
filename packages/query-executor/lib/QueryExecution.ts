@@ -26,10 +26,11 @@ export class QueryExecution implements IQueryExecution {
     this.intervals = [];
   }
 
-  public async collect(): Promise<void> {
+  public async collect(): Promise<IQueryExecutionOutput> {
     return new Promise((resolve, reject) => {
-      let previousTime = Date.now();
-      let currentTime = previousTime;
+      const startTime = Date.now();
+      let previousTime = startTime;
+      let currentTime = startTime;
       this.queryEngine.queryBindings(this.queryString, this.queryContext).then((bindingsStream: BindingsStream) => {
         bindingsStream
           .on('data', (bindings: Bindings) => {
@@ -43,24 +44,20 @@ export class QueryExecution implements IQueryExecution {
             previousTime = currentTime;
           })
           .on('error', reject)
-          .on('end', resolve);
+          .on('end', () => resolve({
+            hash: this.bindingsHash.digest(),
+            intervals: this.intervals,
+            requests: this.fetchCounter.count,
+            duration: Date.now() - startTime,
+            results: this.results,
+          }));
       }).catch(reject);
     });
-  }
-
-  public metrics(error?: string): IQueryExecutionOutput {
-    return {
-      hash: this.bindingsHash.digest(),
-      intervals: this.intervals,
-      requests: this.fetchCounter.count,
-      results: this.results,
-      error,
-    };
   }
 }
 
 export interface IQueryExecution {
-  collect: () => Promise<void>;
+  collect: () => Promise<IQueryExecutionOutput>;
 }
 
 export interface IQueryExecutionArgs {
@@ -75,6 +72,7 @@ export interface IQueryExecutionOutput {
   hash: string;
   requests: number;
   results: number;
+  duration: number;
   intervals: number[];
   error?: any;
 }

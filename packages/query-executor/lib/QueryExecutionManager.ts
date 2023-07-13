@@ -3,7 +3,6 @@ import { join, basename } from 'node:path';
 import { QueryEngineFactory } from '@comunica/query-sparql';
 import type { IBindingsHashFactory } from '@solidlab/chronomunica-bindings-hash';
 import type { IRequestCounterFactory } from '@solidlab/chronomunica-request-counter';
-import type { IQueryExecutionOutput } from './QueryExecution';
 import { QueryExecution } from './QueryExecution';
 
 export class QueryExecutionManager implements IQueryExecutionManager {
@@ -30,7 +29,8 @@ export class QueryExecutionManager implements IQueryExecutionManager {
     for (const configPath of this.queryEngineConfigs) {
       for (const queryFile of this.queryFiles) {
         const results = await this.executeForConfigAndQuery(configPath, queryFile);
-        const outputPath = join(this.resultSerializationPath, `${basename(configPath).split('.')[0]}-${basename(queryFile).split('.')[0]}.json`);
+        const outputFilename = `${basename(configPath).split('.')[0]}-${basename(queryFile).split('.')[0]}.json`;
+        const outputPath = join(this.resultSerializationPath, outputFilename);
         console.log(`Results: ${outputPath} (error: ${results.some(res => res.error !== undefined)})`);
         writeFileSync(outputPath, JSON.stringify(results, undefined, 2), { encoding: 'utf-8' });
       }
@@ -40,10 +40,9 @@ export class QueryExecutionManager implements IQueryExecutionManager {
   private async executeForConfigAndQuery(
     configPath: string,
     queryFile: string,
-  ): Promise<IQueryExecutionOutput[]> {
+  ): Promise<Record<string, any>[]> {
     const queryFileResults = [];
     const queryString = readFileSync(queryFile, { encoding: 'utf-8' });
-    let errorOccurred = false;
     for (let repeat = 0; repeat < this.repeatExecution; repeat++) {
       const queryEngineFactory = new QueryEngineFactory();
       const queryEngine = await queryEngineFactory.create({ configPath });
@@ -54,15 +53,15 @@ export class QueryExecutionManager implements IQueryExecutionManager {
         query: queryString,
         context: this.queryContext,
       });
-      let executionError: string | undefined;
+      let output: Record<string, any> | undefined;
+      let errorOccurred = false;
       try {
         console.log(`Execute: ${queryFile}`);
-        await execution.collect();
+        output = await execution.collect();
       } catch (error: unknown) {
         errorOccurred = true;
-        executionError = String(error);
+        output = { error };
       }
-      const output = execution.metrics(executionError);
       queryFileResults.push({
         query: queryFile,
         engine: configPath,
