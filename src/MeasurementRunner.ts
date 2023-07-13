@@ -24,7 +24,7 @@ export class MeasurementRunner {
     const contextFromFile = context ? JSON.parse(readFileSync(context, { encoding: 'utf-8' })) : {};
     const queryStringContext = <QueryStringContext>{
       ...contextFromFile,
-      fetch: this.requestCounter.fetch,
+      fetch: this.requestCounter.getFetch(),
     };
     let output: Record<string, any> = {};
     try {
@@ -60,7 +60,7 @@ export class MeasurementRunner {
         }).on('error', reject).on('end', () => resolve({
           hash: this.bindingsHash.digest(),
           intervals,
-          requests: this.requestCounter.count,
+          requests: this.requestCounter.getCount(),
           duration: Date.now() - startTime,
           results: resultCount,
         }));

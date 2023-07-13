@@ -1,8 +1,8 @@
 type FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 export class RequestCounter implements IRequestCounter {
-  public count: number;
-  public readonly fetch: FetchFunction;
+  private count: number;
+  private readonly fetch: FetchFunction;
 
   public constructor() {
     this.count = 0;
@@ -11,9 +11,17 @@ export class RequestCounter implements IRequestCounter {
       return fetch(input, init);
     };
   }
+
+  public getFetch(): FetchFunction {
+    return this.fetch;
+  }
+
+  public getCount(): number {
+    return this.count;
+  }
 }
 
 export interface IRequestCounter {
-  fetch: FetchFunction;
-  count: number;
+  getFetch: () => FetchFunction;
+  getCount: () => number;
 }
