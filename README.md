@@ -16,7 +16,7 @@ Currently, the tool will output:
 
 The tool has not been published anywhere, but can be run locally. After cloning, install the dependencies:
 
-    $ yarn install --ignore-engines --frozen-lockfile
+    $ yarn install --immutable
 
 The tool can then be executed:
 
