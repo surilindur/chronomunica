@@ -12,10 +12,10 @@
   ],
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "build": "npm run build:ts && npm run build:components",
+    "build": "yarn run build:ts && yarn run build:components",
     "build:ts": "tsc",
     "build:components": "componentsjs-generator packages/* engines/*",
-    "prepare": "npm run build"
+    "prepare": "yarn run build"
   },
   "devDependencies": {
     "@rdfjs/types": "*",

@@ -2570,7 +2570,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@comunica/types@npm:^2.8.0":
+"@comunica/types@npm:^2.0.0, @comunica/types@npm:^2.8.0":
   version: 2.8.0
   resolution: "@comunica/types@npm:2.8.0"
   dependencies:
@@ -2858,6 +2858,8 @@ __metadata:
 "@solidlab/chronomunica-bindings-hash@^0.0.0, @solidlab/chronomunica-bindings-hash@workspace:packages/bindings-hash":
   version: 0.0.0-use.local
   resolution: "@solidlab/chronomunica-bindings-hash@workspace:packages/bindings-hash"
+  dependencies:
+    "@rdfjs/types": "*"
   languageName: unknown
   linkType: soft
 
@@ -2872,6 +2874,7 @@ __metadata:
   resolution: "@solidlab/chronomunica-query-executor@workspace:packages/query-executor"
   dependencies:
     "@comunica/query-sparql": ^2.0.0
+    "@comunica/types": ^2.0.0
     "@solidlab/chronomunica-bindings-hash": ^0.0.0
     "@solidlab/chronomunica-request-counter": ^0.0.0
   languageName: unknown

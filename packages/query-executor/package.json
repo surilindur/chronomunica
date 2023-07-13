@@ -10,6 +10,7 @@
   "lsd:module": true,
   "dependencies": {
     "@comunica/query-sparql": "^2.0.0",
+    "@comunica/types": "^2.0.0",
     "@solidlab/chronomunica-bindings-hash": "^0.0.0",
     "@solidlab/chronomunica-request-counter": "^0.0.0"
   }
