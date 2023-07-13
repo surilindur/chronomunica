@@ -8,6 +8,9 @@
   "types": "src/index",
   "private": true,
   "lsd:module": true,
+  "bin": {
+    "chronomunica": "bin/chronomunica.js"
+  },
   "scripts": {
     "lint": "eslint . --ext ts --ignore-pattern '*.d.ts' --max-warnings 0",
     "build": "yarn run build:ts && yarn run build:components",
