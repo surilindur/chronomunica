@@ -36,11 +36,11 @@ The environment variable, when provided, will override command line arguments.
 
 There is a Dockerfile provided for building an image for local use. For example, to build the image for a non-existent tag:
 
-    docker build --network host --tag solidlab/chronomunica:dev .
+    $ docker build --network host --tag solidlab/chronomunica:dev .
 
 The image can then be used to run Chronomunica somewhere locally:
 
-    docker run --network host solidlab/chronomunica:dev
+    $ docker run --init --network host solidlab/chronomunica:dev
 
 The purpose of the Dockerfile is to be of use when running local experiments.
 
