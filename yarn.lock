@@ -2866,6 +2866,8 @@ __metadata:
     componentsjs-generator: ^3.0.0
     eslint: ^8.0.0
     typescript: ^5.0.0
+  bin:
+    chronomunica: bin/chronomunica.js
   languageName: unknown
   linkType: soft
 
