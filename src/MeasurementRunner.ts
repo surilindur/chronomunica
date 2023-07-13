@@ -3,18 +3,18 @@ import { basename } from 'node:path';
 import { QueryEngineFactory } from '@comunica/query-sparql';
 import type { QueryStringContext, BindingsStream, Bindings } from '@comunica/types';
 import type { IBindingsHash } from './BindingsHash';
+import type { IMeasurementSerializer } from './MeasurementSerializer';
 import type { IRequestCounter } from './RequestCounter';
-import type { IResultSerializer } from './ResultSerializer';
 
 export class MeasurementRunner {
   private readonly bindingsHash: IBindingsHash;
   private readonly requestCounter: IRequestCounter;
-  private readonly resultSerializer: IResultSerializer;
+  private readonly measurementSerializer: IMeasurementSerializer;
 
   public constructor(args: IMeasurementRunnerArgs) {
     this.bindingsHash = args.bindingsHash;
     this.requestCounter = args.requestCounter;
-    this.resultSerializer = args.resultSerializer;
+    this.measurementSerializer = args.measurementSerializer;
   }
 
   public async run(config: string, query: string, context?: string): Promise<void> {
@@ -33,7 +33,7 @@ export class MeasurementRunner {
       output = { error };
     }
     output = { query: queryId, config: configId, ...output };
-    await this.resultSerializer.serialize(output);
+    await this.measurementSerializer.serialize(output);
   }
 
   private async execute(
@@ -76,5 +76,5 @@ export interface IMeasurementRunner {
 export interface IMeasurementRunnerArgs {
   bindingsHash: IBindingsHash;
   requestCounter: IRequestCounter;
-  resultSerializer: IResultSerializer;
+  measurementSerializer: IMeasurementSerializer;
 }

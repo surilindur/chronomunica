@@ -4,7 +4,7 @@
   ],
   "import": [
     "modules/bindings-hash.json",
-    "modules/result-serializer.json",
+    "modules/measurement-serializer.json",
     "modules/request-counter.json"
   ],
   "@graph": [
@@ -17,8 +17,8 @@
       "requestCounter": {
         "@id": "urn:chronomunica:request-counter#default"
       },
-      "resultSerializer": {
-        "@id": "urn:chronomunica:result-serializer#default"
+      "measurementSerializer": {
+        "@id": "urn:chronomunica:measurement-serializer#default"
       }
     }
   ]

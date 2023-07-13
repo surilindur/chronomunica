@@ -4,9 +4,9 @@
   ],
   "@graph": [
     {
-      "@id": "urn:chronomunica:result-serializer#default",
-      "@type": "ResultSerializer",
-      "path": "./results"
+      "@id": "urn:chronomunica:measurement-serializer#default",
+      "@type": "MeasurementSerializer",
+      "outputPath": "results"
     }
   ]
 }
