@@ -1,8 +1,0 @@
-{
-  "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-config/^0.0.0/components/context.jsonld"
-  ],
-  "import": [
-    "scc:config/config-default.json"
-  ]
-}

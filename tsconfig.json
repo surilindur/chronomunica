@@ -18,10 +18,8 @@
     "strictPropertyInitialization": true
   },
   "include": [
-    "engines/*/bin/*.ts",
-    "engines/*/lib/*.ts",
-    "packages/*/bin/*.ts",
-    "packages/*/lib/*.ts"
+    "src/*.ts",
+    "bin/*.ts"
   ],
   "exclude": [
     "**/node_modules"

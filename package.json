@@ -1,20 +1,22 @@
 {
+  "name": "@solidlab/chronomunica",
   "repository": "https://github.com/surilindur/chronomunica",
   "version": "0.0.0",
   "author": "surilindur",
   "license": "MIT",
+  "main": "src/index.js",
   "types": "src/index",
   "private": true,
   "lsd:module": true,
-  "workspaces": [
-    "engines/*",
-    "packages/*"
-  ],
   "scripts": {
     "lint": "eslint . --ext ts --ignore-pattern '*.d.ts' --max-warnings 0",
     "build": "yarn run build:ts && yarn run build:components",
     "build:ts": "tsc",
-    "build:components": "componentsjs-generator packages/* engines/*"
+    "build:components": "componentsjs-generator"
+  },
+  "dependencies": {
+    "@comunica/query-sparql": "^2.0.0",
+    "componentsjs": "^5.0.0"
   },
   "devDependencies": {
     "@rdfjs/types": "*",
