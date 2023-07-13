@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { env } from 'node:process';
 import { parseArgs } from 'node:util';
 import type { IQueryExecutionManager } from '@solidlab/chronomunica-query-executor';
 import { ComponentsManager } from 'componentsjs';
@@ -8,16 +9,20 @@ const defaultMainModulePath = resolve(__dirname);
 const defaultConfig = resolve(__dirname, '../config/config-default.json');
 
 export async function runApp(): Promise<void> {
-  const { config, executor, mainModulePath } = parseArgs({
+  let { config, executor, modules } = parseArgs({
     options: {
       config: { type: 'string', short: 'c', default: defaultConfig },
       executor: { type: 'string', short: 'e', default: defaultExecutor },
-      mainModulePath: { type: 'string', short: 'm', default: defaultMainModulePath },
+      modules: { type: 'string', short: 'm', default: defaultMainModulePath },
     },
   }).values;
 
+  config = env.CHRONOMUNICA_CONFIG ?? config;
+  executor = env.CHRONOMUNICA_EXECUTOR ?? executor;
+  modules = env.CHRONOMUNICA_MODULE_PATH ?? modules;
+
   const manager = await ComponentsManager.build({
-    mainModulePath: mainModulePath!,
+    mainModulePath: modules!,
     typeChecking: false,
   });
 

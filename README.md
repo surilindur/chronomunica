@@ -22,7 +22,27 @@ The tool can then be executed:
 
     $ yarn chronomunica --config engines/config/config/config-default.json
 
-Various configuration files can be found in [engines/config/config](engines/config/config/).
+Various configuration files can be found in [engines/config/config](engines/config/config/). The following environment variables and command line arguments apply:
+
+| Environment variable       | Command line       | Default                                     |
+|:---------------------------|:-------------------|:--------------------------------------------|
+| `CHRONOMUNICA_CONFIG`      | `--config`, `-c`   | `engines/runner/config/config-default.json` |
+| `CHRONOMUNICA_EXECUTOR`    | `--executor`, `-e` | `urn:chronomunica:executor#default`         |
+| `CHRONOMUNICA_MODULE_PATH` | `--modules`, `-m`  | `engines/runner/lib`                        |
+
+The environment variable, when provided, will override command line arguments.
+
+## Docker
+
+There is a Dockerfile provided for building an image for local use. For example, to build the image for a non-existent tag:
+
+    docker build --network host --tag solidlab/chronomunica:dev .
+
+The image can then be used to run Chronomunica somewhere locally:
+
+    docker run --network host solidlab/chronomunica:dev
+
+The purpose of the Dockerfile is to be of use when running local experiments.
 
 ## Issues
 
