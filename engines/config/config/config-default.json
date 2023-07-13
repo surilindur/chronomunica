@@ -1,7 +1,6 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-config/^0.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-executor/^0.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-query-executor/^0.0.0/components/context.jsonld"
   ],
   "import": [
     "factories/bindings-hash.json",
@@ -17,9 +16,9 @@
       "requestCounterFactory": {
         "@id": "urn:chronomunica:request-counter-factory#default"
       },
-      "queryEngineConfig": "engines/default.json",
+      "queryEngineConfig": "engines/config/config/engines/default.json",
       "queryFiles": [
-        "../../../queries/interactive-discover-8-2.rq"
+        "queries/interactive-discover-8-2.rq"
       ]
     }
   ]

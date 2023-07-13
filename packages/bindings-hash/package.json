@@ -4,6 +4,7 @@
   "repository": "https://github.com/surilindur/chronomunica",
   "author": "surilindur",
   "license": "MIT",
+  "main": "lib/index.js",
   "typings": "lib/index",
   "private": true,
   "lsd:module": true

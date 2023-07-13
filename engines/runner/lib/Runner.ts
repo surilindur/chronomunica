@@ -1,10 +1,10 @@
 import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import type { IQueryExecutionManager } from '@solidlab/chronomunica-executor';
+import type { IQueryExecutionManager } from '@solidlab/chronomunica-query-executor';
 import { ComponentsManager } from 'componentsjs';
 
 const defaultExecutor = 'urn:chronomunica:executor#default';
-const defaultMainModulePath = resolve(__dirname, '../../../');
+const defaultMainModulePath = resolve(__dirname);
 const defaultConfig = resolve(__dirname, '../config/config-default.json');
 
 export async function runApp(): Promise<void> {

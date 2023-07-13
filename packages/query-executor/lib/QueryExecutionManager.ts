@@ -14,10 +14,10 @@ export class QueryExecutionManager implements IQueryExecutionManager {
   private readonly requestCounterFactory: IRequestCounterFactory;
 
   public constructor(args: IQueryExecutionManagerArgs) {
-    this.queryEngineConfig = args.queryEngineConfig;
-    this.queryEngineFactory = new QueryEngineFactory();
     this.bindingsHashFactory = args.bindingsHashFactory;
     this.requestCounterFactory = args.requestCounterFactory;
+    this.queryEngineFactory = new QueryEngineFactory();
+    this.queryEngineConfig = args.queryEngineConfig;
     this.queryContext = args.queryContext;
     this.queryFiles = args.queryFiles;
   }

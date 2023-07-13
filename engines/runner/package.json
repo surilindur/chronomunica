@@ -1,9 +1,10 @@
 {
-  "name": "@solidlab/chronomunica-cli",
+  "name": "@solidlab/chronomunica-runner",
   "version": "0.0.0",
   "repository": "https://github.com/surilindur/chronomunica",
   "author": "surilindur",
   "license": "MIT",
+  "main": "lib/index.js",
   "types": "lib/index",
   "private": true,
   "lsd:module": true,
@@ -13,8 +14,7 @@
   "dependencies": {
     "@solidlab/chronomunica-request-counter": "^0.0.0",
     "@solidlab/chronomunica-bindings-hash": "^0.0.0",
-    "@solidlab/chronomunica-engine-factory": "^0.0.0",
-    "@solidlab/chronomunica-executor": "^0.0.0",
+    "@solidlab/chronomunica-query-executor": "^0.0.0",
     "@solidlab/chronomunica-config": "^0.0.0",
     "componentsjs": "^5.0.0"
   }
