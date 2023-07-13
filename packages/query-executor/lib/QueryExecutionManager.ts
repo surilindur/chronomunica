@@ -39,7 +39,7 @@ export class QueryExecutionManager implements IQueryExecutionManager {
     for (const queryFile of this.queryFiles) {
       const queryString = readFileSync(queryFile, { encoding: 'utf-8' });
       const results = await this.executeForConfigAndQuery(configPath, queryFile, queryString, queryEngine);
-      const outputPath = join(this.resultSerializationPath, `${basename(queryFile).split('.')[0]}.json`);
+      const outputPath = join(this.resultSerializationPath, `${basename(configPath).split('.')[0]}-${basename(queryFile).split('.')[0]}.json`);
       console.log(`Results: ${outputPath} (error: ${results.some(res => res.error !== undefined)})`);
       writeFileSync(outputPath, JSON.stringify(results, undefined, 2), { encoding: 'utf-8' });
     }
