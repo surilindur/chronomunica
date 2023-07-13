@@ -11,7 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint . --ext ts --ignore-pattern '*.d.ts' --max-warnings 0",
     "build": "yarn run build:ts && yarn run build:components",
     "build:ts": "tsc",
     "build:components": "componentsjs-generator packages/* engines/*"
