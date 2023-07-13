@@ -8,14 +8,12 @@
   "types": "lib/index",
   "private": true,
   "lsd:module": true,
-  "bin": {
-    "chronomunica": "bin/chronomunica.js"
-  },
+  "bin": "bin/chronomunica.js",
   "dependencies": {
-    "@solidlab/chronomunica-request-counter": "^0.0.0",
     "@solidlab/chronomunica-bindings-hash": "^0.0.0",
-    "@solidlab/chronomunica-query-executor": "^0.0.0",
     "@solidlab/chronomunica-config": "^0.0.0",
+    "@solidlab/chronomunica-query-executor": "^0.0.0",
+    "@solidlab/chronomunica-request-counter": "^0.0.0",
     "componentsjs": "^5.0.0"
   }
 }
