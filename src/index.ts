@@ -1,5 +1,5 @@
 export * from './AppRunner';
 export * from './BindingsHash';
-export * from './QueryRunner';
+export * from './MeasurementRunner';
 export * from './RequestCounter';
 export * from './ResultSerializer';

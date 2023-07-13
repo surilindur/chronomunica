@@ -6,12 +6,12 @@ import type { IBindingsHash } from './BindingsHash';
 import type { IRequestCounter } from './RequestCounter';
 import type { IResultSerializer } from './ResultSerializer';
 
-export class QueryRunner {
+export class MeasurementRunner {
   private readonly bindingsHash: IBindingsHash;
   private readonly requestCounter: IRequestCounter;
   private readonly resultSerializer: IResultSerializer;
 
-  public constructor(args: IQueryRunnerArgs) {
+  public constructor(args: IMeasurementRunnerArgs) {
     this.bindingsHash = args.bindingsHash;
     this.requestCounter = args.requestCounter;
     this.resultSerializer = args.resultSerializer;
@@ -69,11 +69,11 @@ export class QueryRunner {
   }
 }
 
-export interface IQueryRunner {
+export interface IMeasurementRunner {
   run: (config: string, query: string, context?: string) => Promise<void>;
 }
 
-export interface IQueryRunnerArgs {
+export interface IMeasurementRunnerArgs {
   bindingsHash: IBindingsHash;
   requestCounter: IRequestCounter;
   resultSerializer: IResultSerializer;

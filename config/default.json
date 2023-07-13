@@ -10,7 +10,7 @@
   "@graph": [
     {
       "@id": "urn:chronomunica:runner#default",
-      "@type": "QueryRunner",
+      "@type": "MeasurementRunner",
       "bindingsHash": {
         "@id": "urn:chronomunica:bindings-hash#default"
       },

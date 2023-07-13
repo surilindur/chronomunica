@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 import { env } from 'node:process';
 import { parseArgs } from 'node:util';
 import { ComponentsManager } from 'componentsjs';
-import type { IQueryRunner } from './QueryRunner';
+import type { MeasurementRunner } from './MeasurementRunner';
 
 const defaultRunner = 'urn:chronomunica:runner#default';
 const defaultConfig = resolve(__dirname, '..', 'config', 'default.json');
@@ -33,7 +33,7 @@ export async function runApp(): Promise<void> {
   });
 
   await manager.configRegistry.register(config!);
-  const queryRunner: IQueryRunner = await manager.instantiate(runner!);
+  const queryRunner = await manager.instantiate<MeasurementRunner>(runner!);
   await queryRunner.run(engine!, query!, context);
 }
 
