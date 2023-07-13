@@ -1,6 +1,0 @@
-{
-  "ignoreComponents": [
-    "BinaryToTextEncoding",
-    "IQueryEngine"
-  ]
-}

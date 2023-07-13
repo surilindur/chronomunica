@@ -1,6 +1,5 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-config/^0.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-bindings-hash/^0.0.0/components/context.jsonld"
   ],
   "@graph": [

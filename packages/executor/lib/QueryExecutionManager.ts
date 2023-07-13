@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { QueryEngineFactory } from '@comunica/query-sparql';
 import type { IBindingsHashFactory } from '@solidlab/chronomunica-bindings-hash';
-import type { IFetchCounterFactory } from '@solidlab/chronomunica-fetch-counter';
+import type { IRequestCounterFactory } from '@solidlab/chronomunica-request-counter';
 import { QueryExecution } from './QueryExecution';
 
 export class QueryExecutionManager implements IQueryExecutionManager {
@@ -11,13 +11,13 @@ export class QueryExecutionManager implements IQueryExecutionManager {
 
   private readonly queryEngineFactory: QueryEngineFactory;
   private readonly bindingsHashFactory: IBindingsHashFactory;
-  private readonly fetchCounterFactory: IFetchCounterFactory;
+  private readonly requestCounterFactory: IRequestCounterFactory;
 
   public constructor(args: IQueryExecutionManagerArgs) {
     this.queryEngineConfig = args.queryEngineConfig;
     this.queryEngineFactory = new QueryEngineFactory();
     this.bindingsHashFactory = args.bindingsHashFactory;
-    this.fetchCounterFactory = args.fetchCounterFactory;
+    this.requestCounterFactory = args.requestCounterFactory;
     this.queryContext = args.queryContext;
     this.queryFiles = args.queryFiles;
   }
@@ -27,7 +27,7 @@ export class QueryExecutionManager implements IQueryExecutionManager {
       const execution = new QueryExecution({
         engine: await this.queryEngineFactory.create({ configPath: this.queryEngineConfig }),
         bindingsHash: this.bindingsHashFactory.create(),
-        fetchCounter: this.fetchCounterFactory.create(),
+        fetchCounter: this.requestCounterFactory.create(),
         query: readFileSync(queryFile, { encoding: 'utf-8' }),
         context: this.queryContext,
       });
@@ -50,7 +50,7 @@ export interface IQueryExecutionManager {
 
 export interface IQueryExecutionManagerArgs {
   bindingsHashFactory: IBindingsHashFactory;
-  fetchCounterFactory: IFetchCounterFactory;
+  requestCounterFactory: IRequestCounterFactory;
   queryEngineConfig: string;
   queryContext?: Record<string, any>;
   queryFiles: string[];

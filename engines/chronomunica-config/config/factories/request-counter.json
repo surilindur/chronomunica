@@ -1,0 +1,11 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-request-counter/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:chronomunica:request-counter-factory#default",
+      "@type": "RequestCounterFactory"
+    }
+  ]
+}

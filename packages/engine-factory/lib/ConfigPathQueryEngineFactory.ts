@@ -1,5 +1,4 @@
-import { QueryEngineFactory } from '@comunica/query-sparql';
-import type { IQueryEngine } from '@comunica/types';
+import { QueryEngineFactory, type QueryEngine } from '@comunica/query-sparql';
 
 export class ConfigPathQueryEngineFactory {
   private readonly factory: QueryEngineFactory;
@@ -10,7 +9,7 @@ export class ConfigPathQueryEngineFactory {
     this.configPath = args.configPath;
   }
 
-  public async create(): Promise<IQueryEngine> {
+  public async create(): Promise<QueryEngine> {
     return this.factory.create({ configPath: this.configPath });
   }
 }

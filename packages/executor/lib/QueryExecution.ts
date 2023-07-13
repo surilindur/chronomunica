@@ -1,12 +1,13 @@
-import type { IQueryEngine, QueryStringContext, BindingsStream, Bindings } from '@comunica/types';
+import type { QueryEngine } from '@comunica/query-sparql';
+import type { QueryStringContext, BindingsStream, Bindings } from '@comunica/types';
 import type { IBindingsHash } from '@solidlab/chronomunica-bindings-hash';
-import type { IFetchCounter } from '@solidlab/chronomunica-fetch-counter';
+import type { IRequestCounter } from '@solidlab/chronomunica-request-counter';
 
 export class QueryExecution implements IQueryExecution {
   private readonly queryString: string;
   private readonly queryContext: QueryStringContext;
-  private readonly queryEngine: IQueryEngine;
-  private readonly fetchCounter: IFetchCounter;
+  private readonly queryEngine: QueryEngine;
+  private readonly fetchCounter: IRequestCounter;
   private readonly bindingsHash: IBindingsHash;
 
   private results: number;
@@ -65,8 +66,8 @@ export interface IQueryExecution {
 export interface IQueryExecutionArgs {
   query: string;
   context?: Record<string, any>;
-  engine: IQueryEngine;
-  fetchCounter: IFetchCounter;
+  engine: QueryEngine;
+  fetchCounter: IRequestCounter;
   bindingsHash: IBindingsHash;
 }
 

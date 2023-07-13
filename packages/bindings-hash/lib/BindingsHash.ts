@@ -3,7 +3,7 @@ import type * as RDF from '@rdfjs/types';
 
 export class BindingsHash implements IBindingsHash {
   private readonly algorithm: string;
-  private readonly encoding: BinaryToTextEncoding;
+  private readonly encoding: string;
 
   private readonly bindings: RDF.Bindings[];
 
@@ -21,7 +21,7 @@ export class BindingsHash implements IBindingsHash {
     for (const value of sortedValues) {
       hash.push(value);
     }
-    return hash.digest(this.encoding);
+    return hash.digest(<BinaryToTextEncoding> this.encoding);
   }
 
   public add(bindings: RDF.Bindings): void {
@@ -36,5 +36,5 @@ export interface IBindingsHash {
 
 export interface IBindingsHashArgs {
   algorithm: string;
-  encoding: BinaryToTextEncoding;
+  encoding: string;
 }

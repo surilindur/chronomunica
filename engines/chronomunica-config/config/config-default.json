@@ -1,12 +1,11 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-config/^0.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-executor/^0.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@comunica/config-query-sparql/^2.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solidlab/chronomunica-executor/^0.0.0/components/context.jsonld"
   ],
   "import": [
     "factories/bindings-hash.json",
-    "factories/fetch-counter.json"
+    "factories/request-counter.json"
   ],
   "@graph": [
     {
@@ -15,12 +14,12 @@
       "bindingsHashFactory": {
         "@id": "urn:chronomunica:bindings-hash-factory#default"
       },
-      "fetchCounterFactory": {
-        "@id": "urn:chronomunica:fetch-counter-factory#default"
+      "requestCounterFactory": {
+        "@id": "urn:chronomunica:request-counter-factory#default"
       },
-      "queryEngineConfig": "ccqs:config/config-default.json",
+      "queryEngineConfig": "engines/default.json",
       "queryFiles": [
-        "queries/interactive-discover-8-2.rq"
+        "../../../queries/interactive-discover-8-2.rq"
       ]
     }
   ]

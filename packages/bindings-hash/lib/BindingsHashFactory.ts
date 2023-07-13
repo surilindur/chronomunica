@@ -1,9 +1,8 @@
-import type { BinaryToTextEncoding } from 'node:crypto';
 import { BindingsHash, type IBindingsHash } from './BindingsHash';
 
 export class BindingsHashFactory implements IBindingsHashFactory {
   private readonly algorithm: string;
-  private readonly encoding: BinaryToTextEncoding;
+  private readonly encoding: string;
 
   public constructor(args: IBindingsHashFactoryArgs) {
     this.algorithm = args.algorithm;
@@ -24,5 +23,5 @@ export interface IBindingsHashFactory {
 
 export interface IBindingsHashFactoryArgs {
   algorithm: string;
-  encoding: BinaryToTextEncoding;
+  encoding: string;
 }
