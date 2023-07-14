@@ -1,27 +1,23 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
-    "module": "CommonJS",
     "lib": [
-      "ESNext",
       "DOM"
     ],
     "target": "ESNext",
-    "removeComments": true,
+    "moduleResolution": "NodeNext",
+    "module": "CommonJS",
+    "declaration": true,
+    "inlineSources": true,
+    "newLine": "lf",
     "preserveConstEnums": true,
     "sourceMap": true,
-    "inlineSources": false,
-    "declaration": true,
-    "downlevelIteration": true,
-    "strict": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true
+    "stripInternal": true
   },
   "include": [
-    "src/*.ts",
-    "bin/*.ts"
+    "src",
+    "bin"
   ],
   "exclude": [
-    "**/node_modules"
+    "node_modules"
   ]
 }

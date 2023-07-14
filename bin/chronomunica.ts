@@ -1,5 +1,7 @@
-#!/bin/node
+import { runAppStatic } from '..';
 
-import { runAppStatic } from '../src';
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+  console.error(`Uncaught error from ${origin}: ${err.message}`);
+});
 
 runAppStatic();
