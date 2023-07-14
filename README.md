@@ -20,15 +20,18 @@ The tool has not been published anywhere, but can be run locally. After cloning,
 
 The tool can then be executed:
 
-    $ yarn chronomunica --engine .../config-default.json --query .../example-query.rq
+    $ yarn chronomunica --engine .../config-default.json --query .../example-query.rq --output .../results.json
 
 The following parameters are available:
 
-| Environment variable   | Command line | Description                                       |
-|:-----------------------|:-------------|:--------------------------------------------------|
-| `CHRONOMUNICA_ENGINE`  | `--engine`   | Path to query engine config to instantiate from   |
-| `CHRONOMUNICA_QUERY`   | `--query`    | Path to the file containing a SPARQL query to run |
-| `CHRONOMUNICA_CONTEXT` | `--context`  | Path to a JSON file containing a query context    |
+| Environment variable   | Command line | Required | Description                                        |
+|:-----------------------|:-------------|:--------:|:---------------------------------------------------|
+| `CHRONOMUNICA_ENGINE`  | `--engine`   | ✓       | Path to query engine config to instantiate from    |
+| `CHRONOMUNICA_QUERY`   | `--query`    | ✓       | Path to the file containing a SPARQL query to run  |
+| `CHRONOMUNICA_OUTPUT`  | `--output`   | ✓       | Path to a file to serialize results into           |
+| `CHRONOMUNICA_CONTEXT` | `--context`  |          | Path to a JSON file containing a query context     |
+| `CHRONOMUNICA_HASH`    | `--hash`     |          | Hash function to use for results, default `sha256` |
+| `CHRONOMUNICA_DIGEST`  | `--digest`   |          | Encoding to use for hash digest, default `hex`     |
 
 The environment variable, when provided, will override command line arguments.
 
