@@ -11,18 +11,14 @@
   "lsd:module": true,
   "scripts": {
     "lint": "eslint . --ext ts --ignore-pattern '*.d.ts' --max-warnings 0",
-    "build": "yarn run build:ts && yarn run build:components",
-    "build:ts": "tsc",
-    "build:components": "componentsjs-generator -s src"
+    "build": "tsc"
   },
   "dependencies": {
-    "@comunica/query-sparql": "^2.0.0",
-    "componentsjs": "^5.0.0"
+    "@comunica/query-sparql": "^2.0.0"
   },
   "devDependencies": {
     "@rdfjs/types": "*",
     "@rubensworks/eslint-config": "^2.0.0",
-    "componentsjs-generator": "^3.0.0",
     "eslint": "^8.0.0",
     "typescript": "^5.0.0"
   }
