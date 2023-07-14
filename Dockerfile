@@ -4,17 +4,18 @@ WORKDIR /opt/chronomunica
 
 COPY . .
 
-RUN yarn install --frozen-lockfile --ignore-engines
+RUN corepack enable && corepack prepare yarn@stable --activate
+RUN yarn install --immutable && yarn build
 
-FROM node:current-alpine
+FROM gcr.io/distroless/nodejs20-debian11
 
 WORKDIR /opt/chronomunica
 
+COPY --from=build /opt/chronomunica/bin ./bin
+COPY --from=build /opt/chronomunica/src ./src
 COPY --from=build /opt/chronomunica/package.json ./package.json
-COPY --from=build /opt/chronomunica/packages ./packages
-COPY --from=build /opt/chronomunica/engines ./engines
 COPY --from=build /opt/chronomunica/node_modules ./node_modules
 
-ENTRYPOINT [ "node", "engines/runner/bin/chronomunica.js" ]
+CMD [ "bin/chronomunica.js" ]
 
 ENV NODE_ENV production
