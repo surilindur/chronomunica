@@ -50,20 +50,28 @@ export class MeasurementRunner {
         let previousTime = startTime;
         let currentTime = startTime;
         let resultCount = 0;
-        bindingsStream.on('data', (bindings: Bindings) => {
-          this.bindingsHash.add(bindings);
-          resultCount++;
-          // Register the passed interval
-          currentTime = Date.now();
-          intervals.push(currentTime - previousTime);
-          previousTime = currentTime;
-        }).on('error', reject).on('end', () => resolve({
-          hash: this.bindingsHash.digest(),
-          intervals,
-          requests: this.requestCounter.getCount(),
-          duration: Date.now() - startTime,
-          results: resultCount,
-        }));
+        bindingsStream
+          .on('data', (bindings: Bindings) => {
+            this.bindingsHash.add(bindings);
+            resultCount++;
+            // Register the passed interval
+            currentTime = Date.now();
+            intervals.push(currentTime - previousTime);
+            previousTime = currentTime;
+          })
+          .on('error', reject)
+          .on('end', () => resolve({
+            duration: Date.now() - startTime,
+            results: {
+              intervals,
+              count: resultCount,
+              hash: this.bindingsHash.digest(),
+            },
+            requests: {
+              count: this.requestCounter.getCount(),
+              links: this.requestCounter.getLinks(),
+            },
+          }));
       }).catch(reject);
     });
   }

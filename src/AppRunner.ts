@@ -10,7 +10,7 @@ export async function runApp(): Promise<void> {
       query: { type: 'string' },
       context: { type: 'string' },
       output: { type: 'string' },
-      hash: { type: 'string', default: 'sha256' },
+      hash: { type: 'string', default: 'sha512' },
       digest: { type: 'string', default: 'hex' },
     },
   }).values;
