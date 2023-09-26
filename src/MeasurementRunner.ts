@@ -57,7 +57,6 @@ export class MeasurementRunner {
           let resultCount = 0;
           bindingsStream
             .on('data', (bindings: Bindings) => {
-              console.log(bindings);
               this.bindingsHash.add(bindings);
               resultCount++;
               // Register the passed interval
