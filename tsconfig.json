@@ -6,7 +6,7 @@
     ],
     "target": "ESNext",
     "moduleResolution": "NodeNext",
-    "module": "CommonJS",
+    "module": "NodeNext",
     "declaration": true,
     "inlineSources": true,
     "newLine": "lf",
