@@ -1,6 +1,7 @@
 {
   "name": "@solidlab/chronomunica",
   "repository": "https://github.com/surilindur/chronomunica",
+  "packageManager": "yarn@3.6.3",
   "version": "0.0.0",
   "author": "surilindur",
   "license": "MIT",

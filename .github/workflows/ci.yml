@@ -1,33 +1,58 @@
 name: CI
-
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-env:
-  NODE_VERSION: 20.x
-
+  - push
+  - pull_request
 jobs:
+
   build:
-    name: Lint and build
+    needs: lint
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        node-version:
+          - 16.x
+          - 18.x
+          - 20.x
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Enable corepack
+        run: corepack enable
+      - name: Ensure line endings are consistent
+        run: git config --global core.autocrlf input
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Load cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Build
+        run: yarn build
+
+  lint:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: yarn
-        cache-dependency-path: yarn.lock
-    - name: Set yarn version
-      run: yarn set version stable
-    - name: Install dependencies
-      run: yarn install --immutable
-    - name: Run ESLint
-      run: yarn lint
-    - name: Build packages
-      run: yarn build
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - name: Enable corepack
+        run: corepack enable
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Load cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install --immutable
+      - name: Run linter
+        run: yarn lint
