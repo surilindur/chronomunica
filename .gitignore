@@ -1,6 +1,8 @@
-node_modules/
-components/
-.yarn/
+virtualenv
+node_modules
+
+__pycache__
+.yarn
 
 *.js
 *.js.map

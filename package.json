@@ -5,11 +5,9 @@
   "version": "0.0.0",
   "author": "surilindur",
   "license": "MIT",
-  "main": "src/index.js",
-  "types": "src/index",
+  "main": "runner/index.js",
+  "types": "runner/index",
   "private": true,
-  "bin": "bin/chronomunica.js",
-  "lsd:module": true,
   "scripts": {
     "lint": "eslint . --ext ts --ignore-pattern '*.d.ts' --max-warnings 0",
     "build": "tsc"

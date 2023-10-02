@@ -1,6 +1,6 @@
 import { env } from 'node:process';
 import { parseArgs } from 'node:util';
-import { MeasurementRunner, type IMeasurementRunner } from './MeasurementRunner';
+import { MeasurementRunner, type IMeasurementRunner } from './measurementrunner';
 import { BindingsHash, MeasurementSerializer, RequestCounter } from '.';
 
 export async function runApp(): Promise<void> {
@@ -40,3 +40,9 @@ export function runAppStatic(): void {
     throw error;
   });
 }
+
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+  console.error(`Uncaught error from ${origin}: ${err.message}`);
+});
+
+runAppStatic();

@@ -8,15 +8,12 @@
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
     "declaration": true,
-    "inlineSources": true,
     "newLine": "lf",
-    "preserveConstEnums": true,
     "sourceMap": true,
     "stripInternal": true
   },
   "include": [
-    "src",
-    "bin"
+    "runner"
   ],
   "exclude": [
     "node_modules"

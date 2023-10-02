@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 import { QueryEngineFactory } from '@comunica/query-sparql';
 import type { QueryStringContext, BindingsStream, Bindings, IQueryEngine } from '@comunica/types';
-import type { IBindingsHash } from './BindingsHash';
-import type { IMeasurementSerializer } from './MeasurementSerializer';
-import type { IRequestCounter } from './RequestCounter';
+import type { IBindingsHash } from './bindingshash';
+import type { IMeasurementSerializer } from './measurementserializer';
+import type { IRequestCounter } from './requestcounter';
 
 export class MeasurementRunner {
   private readonly bindingsHash: IBindingsHash;
