@@ -1,5 +1,4 @@
 export * from './bindingshash';
-export * from './measurementrunner';
-export * from './measurementserializer';
-export * from './requestcounter';
+export * from './queryrunner';
+export * from './requestcollector';
 export * from './runner';

@@ -6,34 +6,35 @@ export class BindingsHash implements IBindingsHash {
   private readonly encoding: string;
 
   private readonly bindings: RDF.Bindings[];
-  private digested: boolean;
 
   public constructor(args: IBindingsHashArgs) {
     this.algorithm = args.algorithm;
     this.encoding = args.encoding;
     this.bindings = [];
-    this.digested = false;
   }
 
   public digest(): string {
-    if (this.digested) {
-      throw new Error(`${this.constructor.name} can only be digested once!`);
-    }
-    this.digested = true;
     const hash: Hash = createHash(this.algorithm, { defaultEncoding: 'utf-8' });
-    const bindingsValues: string[] = [];
+    const localeCompare = (first: string, second: string): number => first.localeCompare(second);
+
+    const result: string[] = [];
+
     for (const binding of this.bindings) {
-      const variablesAndValues: string[] = [];
-      for (const [ variable, value ] of binding) {
-        variablesAndValues.push(`${variable.value}:${value.value}`);
+      const variables = [ ...binding.keys() ].map(key => key.value).sort(localeCompare);
+      const values: string[] = [];
+      for (const variable of variables) {
+        values.push(`${variable} -> ${binding.get(variable).value}`);
       }
-      const valueAsString = variablesAndValues.sort((first, second) => first.localeCompare(second)).join('');
-      bindingsValues.push(valueAsString);
+      values.sort(localeCompare);
+      result.push(values.join('\n'));
     }
-    const sortedBindingsValues = bindingsValues.sort((first, second) => first.localeCompare(second));
-    for (const value of sortedBindingsValues) {
+
+    result.sort(localeCompare);
+
+    for (const value of result) {
       hash.update(value, 'utf-8');
     }
+
     return hash.digest(<BinaryToTextEncoding> this.encoding);
   }
 
