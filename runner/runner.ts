@@ -40,7 +40,7 @@ export async function runApp(): Promise<void> {
 
   const runner = new QueryRunner(args);
   const result = await runner.run();
-  console.log(result);
+  console.log(JSON.stringify(result));
 }
 
 export function runAppStatic(): void {

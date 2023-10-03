@@ -4,8 +4,8 @@ on:
   - pull_request
 jobs:
 
-  build:
-    needs: lint
+  build-node:
+    needs: lint-node
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -36,7 +36,40 @@ jobs:
       - name: Build
         run: yarn build
 
-  lint:
+  build-python:
+    needs: lint-python
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        python-version:
+          - 3.9
+          - 3.10
+          - 3.11
+    steps:
+      - name: Use Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Ensure line endings are consistent
+        run: git config --global core.autocrlf input
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Load cache
+        uses: actions/cache@v3
+        with:
+          path: '**/.venv'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/requirements.txt') }}
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install -r requirements.txt
+      - name: Run linter
+        run: python -m black
+  
+  lint-node:
     runs-on: ubuntu-latest
     steps:
       - name: Use Node.js
@@ -56,3 +89,25 @@ jobs:
         run: yarn install --immutable
       - name: Run linter
         run: yarn lint
+
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Python 
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Load cache
+        uses: actions/cache@v3
+        with:
+          path: '**/.venv'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/requirements.txt') }}
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install -r requirements.txt
+      - name: Run linter
+        run: python -m black

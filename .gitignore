@@ -1,4 +1,4 @@
-virtualenv
+.venv
 node_modules
 
 __pycache__
@@ -7,5 +7,6 @@ __pycache__
 *.js
 *.js.map
 *.d.ts
+*.log
 
 componentsjs-error-state.json

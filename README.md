@@ -13,7 +13,6 @@ Currently, the tool will output:
 
 ## Usage
 
-
     TODO
 
 ## Docker
