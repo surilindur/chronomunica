@@ -29,4 +29,4 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Run linter
         run: |
-          python -m pylint
+          python -m pycodestyle --max-line-length 88 ./**/*.py
