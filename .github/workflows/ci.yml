@@ -14,6 +14,7 @@ env:
 jobs:
 
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Use Python ${{ env.PYTHON_VERSION }}
@@ -29,4 +30,19 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Run linter
         run: |
-          python -m pycodestyle --max-line-length 88 ./**/*.py
+          python -m pycodestyle --max-line-length 88 --statistics --count ./**/*.py
+
+  docker:
+    needs: lint
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          push: false
+          tags: solidlab/chronomunica:dev
