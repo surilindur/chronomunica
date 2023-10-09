@@ -1,12 +1,4 @@
-.venv
-node_modules
-
-__pycache__
-.yarn
-
-*.js
-*.js.map
-*.d.ts
+.venv/
+__pycache__/
+experiment/
 *.log
-
-componentsjs-error-state.json

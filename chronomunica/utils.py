@@ -3,20 +3,21 @@ from logging import basicConfig, info, INFO, ERROR, DEBUG
 from typing import Dict
 from pathlib import Path
 
-LOGFILE: Path = Path("chronomunica.log").resolve()
+default_logfile: Path = Path("chronomunica.log").resolve()
 
 log_levels: Dict[str, int] = {"info": INFO, "error": ERROR, "debug": DEBUG}
 
 
 class ArgumentNamespace(Namespace):
-    logging: int
+    loglevel: int
+    logfile: Path
     benchmark: Path | None
     plot: Path | None
 
 
-def setup_logging(level: str) -> None:
+def setup_logging(level: str, path: Path) -> None:
     basicConfig(
-        filename=LOGFILE,
+        filename=path,
         format="{asctime} | {levelname: <9} | {message}",
         datefmt="%Y-%m-%d %H:%M:%S",
         style="{",
@@ -24,7 +25,7 @@ def setup_logging(level: str) -> None:
         filemode="a",
         encoding="utf-8",
     )
-    info(f"Logging setup finished, logging to {LOGFILE} on level {level}")
+    info(f"Logging setup finished, logging to {path} on level {level}")
 
 
 def parse_arguments() -> ArgumentNamespace:
@@ -35,7 +36,10 @@ def parse_arguments() -> ArgumentNamespace:
         allow_abbrev=False,
     )
 
-    argument_parser.add_argument("--logging", choices=log_levels.keys(), default="info")
+    argument_parser.add_argument(
+        "--loglevel", choices=log_levels.keys(), default="info"
+    )
+    argument_parser.add_argument("--logfile", default=default_logfile, type=Path)
 
     group = argument_parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--benchmark", type=Path)
@@ -43,6 +47,6 @@ def parse_arguments() -> ArgumentNamespace:
 
     args = argument_parser.parse_args(namespace=ArgumentNamespace)
 
-    setup_logging(args.logging)
+    setup_logging(level=args.loglevel, path=args.logfile)
 
     return args

@@ -4,18 +4,18 @@ WORKDIR /opt/chronomunica
 
 COPY . .
 
-RUN corepack enable && corepack prepare yarn@stable --activate
-RUN yarn install --immutable && yarn build
+RUN corepack enable && yarn install --immutable && yarn build
 
-FROM gcr.io/distroless/nodejs20-debian11
+FROM python:3-alpine
 
 WORKDIR /opt/chronomunica
 
-COPY --from=build /opt/chronomunica/bin ./bin
-COPY --from=build /opt/chronomunica/src ./src
+COPY --from=build /opt/chronomunica/runner ./runner
+COPY --from=build /opt/chronomunica/tool ./tool
 COPY --from=build /opt/chronomunica/package.json ./package.json
 COPY --from=build /opt/chronomunica/node_modules ./node_modules
+COPY --from=build /opt/chronomunica/requirements.txt ./requirements.txt
 
-CMD [ "bin/chronomunica.js" ]
+RUN python -m pip install -r requirements.txt
 
-ENV NODE_ENV production
+ENTRYPOINT [ "python", "tool/chronomunica.py" ]
