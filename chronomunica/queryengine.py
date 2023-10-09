@@ -5,7 +5,7 @@ from logging import exception
 from datetime import timedelta, datetime
 from typing import Optional, Dict, List, Any
 from subprocess import Popen, PIPE
-from collections.abc import Sequence
+from hashlib import sha256
 from threading import Timer
 
 TIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
@@ -69,11 +69,14 @@ class QueryEngine:
             time_end = datetime.utcnow()
             timer.cancel()
             proc.terminate()
+            result_hash = sha256(usedforsecurity=False)
+            for result in sorted(dumps(r) for r in results):
+                hash.update(result.encode())
             output = {
                 "time_start": time_start.strftime(TIME_FORMAT),
                 "time_end": time_end.strftime(TIME_FORMAT),
                 "result_count": len(results),
-                "result_hash": hash("".join(sorted(dumps(r) for r in results))),
+                "result_hash": result_hash.hexdigest(),
                 "result_list": results,
                 "result_intervals": intervals,
             }
