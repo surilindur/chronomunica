@@ -68,7 +68,7 @@ class QueryEngine:
                     time_prev = time_now
             time_end = datetime.utcnow()
             timer.cancel()
-            proc.kill()
+            proc.terminate()
             output = {
                 "time_start": time_start.strftime(TIME_FORMAT),
                 "time_end": time_end.strftime(TIME_FORMAT),
