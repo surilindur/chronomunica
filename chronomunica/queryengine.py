@@ -71,7 +71,7 @@ class QueryEngine:
             proc.terminate()
             result_hash = sha256(usedforsecurity=False)
             for result in sorted(dumps(r) for r in results):
-                hash.update(result.encode())
+                result_hash.update(result.encode())
             output = {
                 "time_start": time_start.strftime(TIME_FORMAT),
                 "time_end": time_end.strftime(TIME_FORMAT),
