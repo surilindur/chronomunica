@@ -25,7 +25,7 @@ def setup_logging(level: str, path: Path) -> None:
         filemode="a",
         encoding="utf-8",
     )
-    info(f"Logging setup finished, logging to {path} on level {level}")
+    info(f'Logging setup finished, logging {level} to "{path}"')
 
 
 def parse_arguments() -> ArgumentNamespace:
