@@ -1,4 +1,6 @@
-.venv/
-__pycache__/
-experiment/
+/.venv
+/experiment
+
+__pycache__
+
 *.log

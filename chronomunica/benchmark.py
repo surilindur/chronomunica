@@ -51,9 +51,7 @@ class Benchmark:
                 info(f"Query ({executions_done} / {executions_total}) {query_id}")
                 results[query_id].append(self.execute_query(query_string))
                 executions_done += 1
-        input("Any key to quit")
         self.serialize_results(results)
-        self.proxy_server.stop()
 
     def execute_query(self, query_string) -> Dict[str, Any]:
         try:

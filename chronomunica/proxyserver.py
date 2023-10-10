@@ -1,93 +1,90 @@
-from flask import Flask, Response, request as incoming_request
-from requests import request as request
-from logging import info, exception
-from typing import List, Dict
-
-# from multiprocessing import Process
+from requests import request
+from logging import info, debug, error
+from typing import Any, List, Dict
 from threading import Thread
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
 class ProxyServer:
-    app: Flask
     urls: List[str]
-
-    # process: Process
     thread: Thread
-
-    protocol: str
-    host: str
-    port: int
-
-    server_host: str
-    server_port: int
+    server: ThreadingHTTPServer
 
     def __init__(self, config: Dict[str, str | int]) -> None:
-        self.protocol = config["protocol"]
-        self.host = config["proxy_host"]
-        self.port = int(config["proxy_port"])
-        self.server_host = config["upstream_host"]
-        self.server_port = int(config["upstream_port"])
-        self.urls = []
+        protocol: str = config["protocol"]
+        host: str = config["proxy_host"]
+        port: int = int(config["proxy_port"])
+        upstream_host: str = config["upstream_host"]
+        upstream_port: int = int(config["upstream_port"])
 
-        self.app = Flask(__name__)
-        target_base = f"{self.protocol}://{self.server_host}:{self.server_port}"
+        proxied_urls: List[str] = []
+        self.urls = proxied_urls
 
-        @self.app.route("/", defaults={"path": ""}, methods=["GET", "HEAD", "OPTIONS"])
-        @self.app.route("/<path:path>", methods=["GET", "HEAD", "OPTIONS"])
-        def proxy(path) -> Response:
-            try:
-                url = f"{target_base}/{path}"
-                self.urls.append(url)
+        listen_base = f"{protocol}://{host}:{port}"
+        proxy_base = f"{protocol}://{upstream_host}:{upstream_port}"
+
+        excluded_headers = set(
+            (
+                "content-encoding",
+                "content-length",
+                "transfer-encoding",
+                "connection",
+            )
+        )
+
+        info(f"Proxy server: {listen_base} -> {proxy_base}")
+
+        class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
+            def proxy_request(self) -> None:
+                target_url = f"{proxy_base}{self.path}"
+                proxied_urls.append(target_url)
+                proxied_headers = {
+                    k: v for k, v in self.headers.items() if k.lower() != "host"
+                }
                 res = request(
-                    method=incoming_request.method,
-                    url=url,
-                    data=incoming_request.data,
-                    headers={
-                        k: v for k, v in incoming_request.headers if k.lower() != "host"
-                    },
-                    cookies=incoming_request.cookies,
+                    method=self.command,
+                    url=target_url,
+                    headers=proxied_headers,
                     stream=True,
                     allow_redirects=False,
                 )
-                excluded_headers = [
-                    "content-encoding",
-                    "content-length",
-                    "transfer-encoding",
-                    "connection",
-                ]
-                headers = [
-                    (k, v)
-                    for k, v in res.raw.headers.items()
-                    if k.lower() not in excluded_headers
-                ]
-                return Response(
-                    response=res.iter_content(decode_unicode=True),
-                    status=res.status_code,
-                    headers=headers,
-                )
-            except Exception as ex:
-                exception(ex)
-                raise ex
+                self.send_response(code=res.status_code)
+                for k, v in res.headers.items():
+                    if k.lower() not in excluded_headers:
+                        self.send_header(k, v)
+                self.end_headers()
+                for chunk in res.iter_content(decode_unicode=True):
+                    self.wfile.write(chunk)
 
-        # self.process = Process(
-        self.thread = Thread(
-            target=self.app.run,
-            kwargs={"host": self.host, "port": self.port},
-            daemon=True,
-        )
+            def do_GET(self) -> None:
+                self.proxy_request()
+
+            def do_HEAD(self) -> None:
+                self.proxy_request()
+
+            def do_OPTIONS(self) -> None:
+                self.proxy_request()
+
+            def log_request(self, code: int | str = "-", size: int | str = "-") -> None:
+                debug(f"Proxy {code: >3} {self.command: <7} {self.path}")
+
+            def log_message(self, format: str, *args: Any) -> None:
+                debug(format.format(args))
+
+            def log_error(self, format: str, *args: Any) -> None:
+                error(format.format(args))
+
+        self.server = ThreadingHTTPServer((host, port), ProxyHTTPRequestHandler)
+        self.thread = Thread(target=self.server.serve_forever, daemon=True)
 
     def start(self) -> None:
-        local_addr: str = f"{self.protocol}://{self.host}:{self.port}"
-        upstream_addr: str = f"{self.protocol}://{self.server_host}:{self.server_port}"
-        info(f"Starting proxy server {local_addr} -> {upstream_addr}")
+        info("Starting proxy server")
         self.thread.start()
-        # self.process.start()
 
     def stop(self) -> None:
-        info("Terminating proxy server")
-        # self.process.kill()
-        self.thread.join()
-        info("Terminated proxy server")
+        info("Shutting down proxy server")
+        self.server.shutdown()
+        # self.thread.join()
 
     def reset(self) -> List[str]:
         urls = list(u for u in self.urls)
