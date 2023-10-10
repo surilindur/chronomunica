@@ -29,12 +29,12 @@ class Benchmark:
 
         for string_path in data["queries"]:
             path = Path(string_path).resolve()
-            info(f"Load queries from {path}")
+            info(f'Loading queries from "{path}"')
             with open(path, "r") as infile:
                 all_queries = infile.read().split("\n\nPREFIX")
             for i in range(0, len(all_queries)):
                 query_string = f"{'PREFIX'  if i > 0 else ''}{all_queries[i]}".strip()
-                query_id = f"file://{path.as_posix()}#{i}"
+                query_id = f"{path.as_uri()}#{i}"
                 self.queries[query_id] = query_string
 
         info(f"Loaded {len(self.queries)} queries")
@@ -48,10 +48,11 @@ class Benchmark:
         for query_id, query_string in self.queries.items():
             results[query_id] = []
             for i in range(0, self.replication):
-                info(f"Query ({executions_done} / {executions_total}) {query_id}")
+                info(f"Query {executions_done} / {executions_total} <{query_id}>")
                 results[query_id].append(self.execute_query(query_string))
                 executions_done += 1
         self.serialize_results(results)
+        self.proxy_server.stop()
 
     def execute_query(self, query_string) -> Dict[str, Any]:
         try:
@@ -63,7 +64,7 @@ class Benchmark:
             return {"error": str(ex)}
 
     def serialize_results(self, results: Dict[str, Any]) -> None:
-        info(f"Serializing results to {self.results}")
+        info(f'Serializing results to "{self.results}"')
         with open(self.results, "w") as result_file:
             result_file.write(
                 dumps(results, indent=2, ensure_ascii=False, sort_keys=True)

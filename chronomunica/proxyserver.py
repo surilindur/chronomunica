@@ -32,7 +32,7 @@ class ProxyServer:
             )
         )
 
-        info(f"Proxy server: {listen_base} -> {proxy_base}")
+        info(f"Proxy server: <{listen_base}> to <{proxy_base}>")
 
         class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
             def proxy_request(self) -> None:
@@ -84,7 +84,7 @@ class ProxyServer:
     def stop(self) -> None:
         info("Shutting down proxy server")
         self.server.shutdown()
-        # self.thread.join()
+        self.thread.join()
 
     def reset(self) -> List[str]:
         urls = list(u for u in self.urls)
