@@ -1,6 +1,4 @@
-/.venv
-/experiment
-
+.venv
+template
 __pycache__
-
 *.log
