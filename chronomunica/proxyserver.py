@@ -1,8 +1,21 @@
-from requests import request
-from logging import info, debug, error
-from typing import Any, List, Dict
+from logging import info, debug, error, exception
+from typing import Any, List, Dict, Set
 from threading import Thread
+from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.client import HTTPResponse
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
+
+
+IGNORE_HEADERS: Set[str] = set(
+    (
+        "content-encoding",
+        "content-length",
+        "transfer-encoding",
+        "connection",
+    )
+)
 
 
 class ProxyServer:
@@ -11,11 +24,11 @@ class ProxyServer:
     server: ThreadingHTTPServer
 
     def __init__(self, config: Dict[str, str | int]) -> None:
-        protocol: str = config["protocol"]
         host: str = config["proxy_host"]
         port: int = int(config["proxy_port"])
         upstream_host: str = config["upstream_host"]
         upstream_port: int = int(config["upstream_port"])
+        protocol: str = "http"
 
         proxied_urls: List[str] = []
         self.urls = proxied_urls
@@ -23,38 +36,41 @@ class ProxyServer:
         listen_base = f"{protocol}://{host}:{port}"
         proxy_base = f"{protocol}://{upstream_host}:{upstream_port}"
 
-        excluded_headers = set(
-            (
-                "content-encoding",
-                "content-length",
-                "transfer-encoding",
-                "connection",
-            )
-        )
-
         info(f"Proxy server: <{listen_base}> to <{proxy_base}>")
 
         class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
             def proxy_request(self) -> None:
-                target_url = f"{proxy_base}{self.path}"
-                proxied_urls.append(target_url)
-                proxied_headers = {
-                    k: v for k, v in self.headers.items() if k.lower() != "host"
-                }
-                res = request(
-                    method=self.command,
-                    url=target_url,
-                    headers=proxied_headers,
-                    stream=True,
-                    allow_redirects=False,
-                )
-                self.send_response(code=res.status_code)
-                for k, v in res.headers.items():
-                    if k.lower() not in excluded_headers:
-                        self.send_header(k, v)
-                self.end_headers()
-                for chunk in res.iter_content(decode_unicode=True):
-                    self.wfile.write(chunk)
+                try:
+                    target_url = f"{proxy_base}{self.path}"
+                    proxied_urls.append(target_url)
+                    proxied_headers = {
+                        k: v for k, v in self.headers.items() if k.lower() != "host"
+                    }
+                    request: Request = Request(
+                        url=target_url,
+                        headers=proxied_headers,
+                        method=self.command,
+                    )
+                    response: HTTPResponse = urlopen(request)
+                    self.send_response(code=response.status)
+                    for k, v in response.headers.items():
+                        if k.lower() not in IGNORE_HEADERS:
+                            self.send_header(k, v)
+                    self.end_headers()
+                    if response.chunked:
+                        while True:
+                            chunk = response.read(4096)
+                            if chunk:
+                                self.wfile.write(chunk)
+                            else:
+                                break
+                    else:
+                        self.wfile.write(response.read())
+                except HTTPError as ex:
+                    self.send_error(ex.code)
+                except Exception as ex:
+                    exception(ex)
+                    self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
 
             def do_GET(self) -> None:
                 self.proxy_request()
@@ -69,10 +85,10 @@ class ProxyServer:
                 debug(f"Proxy {code: >3} {self.command: <7} {self.path}")
 
             def log_message(self, format: str, *args: Any) -> None:
-                debug(format.format(args))
+                debug(format, *args)
 
             def log_error(self, format: str, *args: Any) -> None:
-                error(format.format(args))
+                error(format, *args)
 
         self.server = ThreadingHTTPServer((host, port), ProxyHTTPRequestHandler)
         self.thread = Thread(target=self.server.serve_forever, daemon=True)

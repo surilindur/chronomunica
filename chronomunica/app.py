@@ -1,11 +1,11 @@
 from utils import parse_arguments
-from benchmark import Benchmark
+from experiment import Experiment
 
 
 if __name__ == "__main__":
     args = parse_arguments()
-    if args.benchmark:
-        benchmark = Benchmark(args.benchmark)
-        benchmark.execute()
+    if args.experiment:
+        experiment = Experiment(args.experiment)
+        experiment.execute()
     elif args.plot:
         print("plot")

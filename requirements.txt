@@ -1,4 +1,3 @@
 black
 pycodestyle
-
-requests
+matplotlib
