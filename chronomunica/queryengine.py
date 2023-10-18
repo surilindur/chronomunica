@@ -66,12 +66,12 @@ class QueryEngine:
         time_end: datetime = datetime.utcnow()
         timer.cancel()
 
-        proc_returncode = proc.poll()
+        returncode = proc.poll()
         proc.terminate()
 
-        if proc_returncode:
+        if returncode:
             raise TimeoutError(
-                f"Timed out after {timeout.total_seconds()} seconds (code {proc_returncode})"
+                f"Timeout at {timeout.total_seconds()} seconds (code {returncode})"
             )
 
         result_hash = sha256(usedforsecurity=False)
