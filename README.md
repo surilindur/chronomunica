@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="logo" src="./images/logo.svg" width="300">
+    <img alt="logo" src="https://raw.githubusercontent.com/surilindur/chronomunica/main/images/logo.svg" width="250">
 </p>
 
 Chronomunica is an experimental Python tool to measure query execution using [Comunica](https://github.com/comunica/comunica). The tool uses a combination of a proxy server and subprocess calls to execute queries using specific query engine configurations and queries. Please note that Chronomunica is not intended for actual use, and should be treated with caution. If you want to actually run benchmarks, look into using [jbr.js](https://github.com/rubensworks/jbr.js).
