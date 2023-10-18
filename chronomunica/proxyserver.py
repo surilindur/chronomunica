@@ -55,18 +55,30 @@ class ProxyServer:
                     self.send_response(code=response.status)
                     for k, v in response.headers.items():
                         if k.lower() not in IGNORE_HEADERS:
-                            self.send_header(k, v)
+                            self.send_header(
+                                k,
+                                v.replace(proxy_base, listen_base)
+                                if isinstance(v, str) and proxy_base in v
+                                else v,
+                            )
                     self.end_headers()
-                    if response.chunked:
-                        while True:
-                            chunk = response.read(4096)
-                            if chunk:
-                                self.wfile.write(chunk)
-                            else:
-                                break
+                    if response.chunked and response.chunk_left:
+                        while response.chunk_left:
+                            self.wfile.write(
+                                response.read(response.chunk_left)
+                                .decode()
+                                .replace(proxy_base, listen_base)
+                                .encode()
+                            )
                     else:
-                        self.wfile.write(response.read())
+                        self.wfile.write(
+                            response.read()
+                            .decode()
+                            .replace(proxy_base, listen_base)
+                            .encode()
+                        )
                 except HTTPError as ex:
+                    # error(f"{ex.code} {target_url}")
                     self.send_error(ex.code)
                 except Exception as ex:
                     exception(ex)

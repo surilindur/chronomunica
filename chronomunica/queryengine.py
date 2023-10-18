@@ -1,9 +1,8 @@
 from json import dumps, loads
 from pathlib import Path
 from time import time_ns
-from logging import exception, info
 from datetime import timedelta, datetime
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, Any
 from subprocess import Popen, PIPE
 from hashlib import sha256
 from threading import Timer
@@ -24,73 +23,71 @@ class QueryEngine:
     def query(
         self, query_string: str, timeout: timedelta, config_path: Path
     ) -> Dict[str, Any]:
-        try:
-            args = ["node", self.bin.as_posix(), "--query", query_string]
+        args = ["node", self.bin.as_posix(), "--query", query_string]
 
-            if self.context:
-                args.append("--context")
-                args.append(self.context)
+        if self.context:
+            args.append("--context")
+            args.append(self.context)
 
-            proc: Popen = Popen(
-                args,
-                env={"COMUNICA_CONFIG": config_path.as_posix()},
-                cwd=self.bin.parent.parent,
-                encoding="utf-8",
-                stdout=PIPE,
-                stderr=PIPE,
+        unknown_output: Dict[int, str] = {}
+        result_bindings: Dict[int, Any] = {}
+
+        time_start: datetime = datetime.utcnow()
+
+        proc: Popen = Popen(
+            args=args,
+            env={"COMUNICA_CONFIG": config_path.as_posix()},
+            cwd=self.bin.parent.parent,
+            encoding="utf-8",
+            stdout=PIPE,
+            stderr=PIPE,
+        )
+
+        timer: Timer = Timer(interval=timeout.total_seconds(), function=proc.terminate)
+        timer.start()
+
+        ns_start: int = time_ns()
+
+        for line in proc.stdout:
+            ns_line: int = time_ns() - ns_start
+            line: str = line.strip().removesuffix(",").removeprefix("[").strip()
+            if not line:
+                # skip empty lines
+                continue
+            elif line.endswith("]"):
+                # when the result bindings are done, the reading loop can be terminated
+                break
+            elif line.startswith("{") and line.endswith("}"):
+                query_result = loads(line)
+                result_bindings[ns_line] = query_result
+            else:
+                unknown_output[ns_line] = line
+
+        time_end: datetime = datetime.utcnow()
+        timer.cancel()
+
+        proc_returncode = proc.poll()
+        proc.terminate()
+
+        if proc_returncode:
+            raise TimeoutError(
+                f"Timed out after {timeout.total_seconds()} seconds (code {proc_returncode})"
             )
 
-            result_intervals: List[int] = []
-            result_bindings: List[Any] = []
+        result_hash = sha256(usedforsecurity=False)
+        result_dumps = sorted(dumps(r) for r in result_bindings.values())
 
-            time_start: datetime = datetime.utcnow()
-            time_end: datetime = time_start
-            time_prev: int = time_ns()
-            time_now: int = time_prev
+        for result_dump in result_dumps:
+            result_hash.update(result_dump.encode())
 
-            def on_timeout() -> None:
-                proc.terminate()
-                raise TimeoutError(
-                    f"Query timed out after {timeout.total_seconds()} seconds"
-                )
-
-            timer: Timer = Timer(interval=timeout.total_seconds(), function=on_timeout)
-            timer.start()
-
-            while True:
-                line: str = proc.stdout.readline()
-                time_now = time_ns()
-                line = line.strip().removesuffix(",").removeprefix("[").strip()
-                if not line:
-                    continue
-                elif line.endswith("]"):
-                    break
-                elif line.startswith("{") and line.endswith("}"):
-                    query_result = loads(line)
-                    result_bindings.append(query_result)
-                    result_intervals.append(time_now - time_prev)
-                    time_prev = time_now
-                else:
-                    info(f"Unexpected output: {line}")
-
-            time_end = datetime.utcnow()
-            timer.cancel()
-            proc.terminate()
-            result_hash = sha256(usedforsecurity=False)
-
-            for result in sorted(dumps(r) for r in result_bindings):
-                result_hash.update(result.encode())
-
-            return {
-                "time_start": time_start.strftime(TIME_FORMAT),
-                "time_end": time_end.strftime(TIME_FORMAT),
-                "result_count": len(result_bindings),
-                "result_hash": result_hash.hexdigest(),
-                "result_list": result_bindings,
-                "result_intervals": result_intervals,
-                "error": proc.stderr.read(),
-            }
-
-        except Exception as ex:
-            exception(ex)
-            return {"error": str(ex)}
+        return {
+            "time_start": time_start.strftime(TIME_FORMAT),
+            "time_end": time_end.strftime(TIME_FORMAT),
+            "time_taken": (time_end - time_start).total_seconds(),
+            "result_count": len(result_bindings),
+            "result_count_unique": len(set(result_dumps)),
+            "result_hash": result_hash.hexdigest(),
+            "result_bindings": result_bindings,
+            "other_output": unknown_output,
+            "error": proc.stderr.read(),
+        }

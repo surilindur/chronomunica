@@ -1,5 +1,8 @@
 .venv
-template
-visualizer
 __pycache__
+
+template
+testing
+visualizer
+
 *.log

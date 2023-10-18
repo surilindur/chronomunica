@@ -6,4 +6,4 @@ COPY . .
 
 RUN python -m pip install -r requirements.txt
 
-CMD [ "python", "chronomunica/app.py" ]
+CMD [ "python", "chronomunica/runner.py" ]

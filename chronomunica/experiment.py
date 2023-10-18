@@ -69,14 +69,14 @@ class Experiment:
     def execute_query(self, query_string: str, config_path: Path) -> Dict[str, Any]:
         try:
             result = self.query_engine.query(query_string, self.timeout, config_path)
-            requested_urls = self.proxy_server.reset()
-            result["request_urls"] = requested_urls
-            result["request_count"] = len(requested_urls)
-            result["request_count_unique"] = len(set(requested_urls))
-            return result
         except Exception as ex:
             error(ex)
-            return {"error": str(ex)}
+            result = {"error": str(ex)}
+        requested_urls = self.proxy_server.reset()
+        result["request_urls"] = requested_urls
+        result["request_count"] = len(requested_urls)
+        result["request_count_unique"] = len(set(requested_urls))
+        return result
 
     def serialize_results(self, results: Dict[str, Any]) -> None:
         time_string: str = datetime.utcnow().strftime("%Y%m%d%H%M%S")

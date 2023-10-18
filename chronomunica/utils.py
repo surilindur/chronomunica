@@ -1,17 +1,15 @@
 from argparse import ArgumentParser, Namespace
 from logging import basicConfig, info, INFO, ERROR, DEBUG
-from typing import Dict
+from typing import Dict, Optional
 from pathlib import Path
 from sys import stdout
-
-default_logfile: Path = Path("chronomunica.log").resolve()
 
 log_levels: Dict[str, int] = {"info": INFO, "error": ERROR, "debug": DEBUG}
 
 
 class ArgumentNamespace(Namespace):
-    loglevel: int
-    logfile: Path
+    log_level: str
+    log_file: Optional[Path]
     experiment: Path | None
     plot: Path | None
 
@@ -20,18 +18,20 @@ def parse_path(path: str) -> Path:
     return Path(path.removeprefix("file://")).resolve()
 
 
-def setup_logging(level: str, path: Path) -> None:
+def setup_logging(level: str, path: Optional[Path]) -> None:
+    log_target_args = (
+        {"filename": path, "filemode": "w", "encoding": "utf-8"}
+        if path
+        else {"stream": stdout}
+    )
     basicConfig(
-        # filename=path,
-        stream=stdout,
-        format="{asctime} | {levelname: <9} | {message}",
+        **log_target_args,
+        format="{asctime} | {levelname: <9} | {module}: {message}",
         datefmt="%Y-%m-%d %H:%M:%S",
         style="{",
         level=log_levels[level],
-        filemode="a",
-        encoding="utf-8",
     )
-    info(f'Logging setup finished, logging {level} to "{path}"')
+    info(f"Logging setup finished, logging at {level} level")
 
 
 def parse_arguments() -> ArgumentNamespace:
@@ -43,9 +43,10 @@ def parse_arguments() -> ArgumentNamespace:
     )
 
     argument_parser.add_argument(
-        "--loglevel", choices=log_levels.keys(), default="info"
+        "--log-level", choices=log_levels.keys(), default="info"
     )
-    argument_parser.add_argument("--logfile", default=default_logfile, type=Path)
+
+    argument_parser.add_argument("--log-file", required=False, type=Path)
 
     group = argument_parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--experiment", type=Path)
@@ -53,6 +54,6 @@ def parse_arguments() -> ArgumentNamespace:
 
     args = argument_parser.parse_args(namespace=ArgumentNamespace)
 
-    setup_logging(level=args.loglevel, path=args.logfile)
+    setup_logging(level=args.log_level, path=args.log_file)
 
     return args
