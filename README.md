@@ -3,8 +3,10 @@
 </p>
 
 <p align="center">
-    <img alt="ci" src="https://github.com/surilindur/chronomunica/actions/workflows/ci.yml/badge.svg">
-    <img alt="black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
+    <a href="https://github.com/surilindur/chronomunica/actions"><img alt="Actions Status" src="https://github.com/surilindur/chronomunica/actions/workflows/ci.yml/badge.svg"></a>
+    <a href="https://python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.11-blue.svg"></a>
+    <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-brightgreen.svg"></a>
+    <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/Code%20Style-black-000000.svg"></a>    
 </p>
 
 Chronomunica is an experimental Python tool to measure query execution using [Comunica](https://github.com/comunica/comunica). The tool uses a combination of a proxy server and subprocess calls to execute queries using specific query engine configurations and queries. Please note that Chronomunica is not intended for actual use, and should be treated with caution. If you want to actually run benchmarks, look into using [jbr.js](https://github.com/rubensworks/jbr.js).
