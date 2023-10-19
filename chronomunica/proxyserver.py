@@ -78,21 +78,20 @@ class ProxyServer:
                             .encode()
                         )
                 except HTTPError as ex:
-                    # error(f"{ex.code} {target_url}")
-                    try:
-                        self.send_error(ex.code)
-                    except BrokenPipeError as ex_pipe:
-                        error(ex_pipe)
-                    except Exception as ex_nested:
-                        exception(ex_nested)
+                    self.send_error(ex.code)
+                except ConnectionResetError as ex:
+                    self.send_error(HTTPStatus.BAD_GATEWAY.value)
                 except Exception as ex:
                     exception(ex)
-                    try:
-                        self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
-                    except BrokenPipeError as ex_pipe:
-                        error(ex_pipe)
-                    except Exception as ex_nested:
-                        exception(ex_nested)
+                    self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+
+            def send_error(
+                self, code: int, message: str | None = None, explain: str | None = None
+            ) -> None:
+                try:
+                    return super().send_error(code, message, explain)
+                except Exception as ex:
+                    exception(ex)
 
             def do_GET(self) -> None:
                 self.proxy_request()
@@ -110,7 +109,7 @@ class ProxyServer:
                 debug(format, *args)
 
             def log_error(self, format: str, *args: Any) -> None:
-                error(format, *args)
+                error("{}".format(args[0], f"{proxy_base}{self.path}"))
 
         self.server = ThreadingHTTPServer((host, port), ProxyHTTPRequestHandler)
         self.thread = Thread(target=self.server.serve_forever, daemon=True)
