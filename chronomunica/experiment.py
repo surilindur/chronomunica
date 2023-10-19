@@ -72,6 +72,7 @@ class Experiment:
                     except KeyboardInterrupt:
                         info("Interrupted by user, will skip remaining queries")
                         skip_remaining = True
+                        break
                 config_results[query_id] = query_results
             results[config_path.as_posix()] = config_results
         self.serialize_results(results)
