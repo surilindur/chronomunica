@@ -79,10 +79,20 @@ class ProxyServer:
                         )
                 except HTTPError as ex:
                     # error(f"{ex.code} {target_url}")
-                    self.send_error(ex.code)
+                    try:
+                        self.send_error(ex.code)
+                    except BrokenPipeError as ex_pipe:
+                        error(ex_pipe)
+                    except Exception as ex_nested:
+                        exception(ex_nested)
                 except Exception as ex:
                     exception(ex)
-                    self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+                    try:
+                        self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+                    except BrokenPipeError as ex_pipe:
+                        error(ex_pipe)
+                    except Exception as ex_nested:
+                        exception(ex_nested)
 
             def do_GET(self) -> None:
                 self.proxy_request()
