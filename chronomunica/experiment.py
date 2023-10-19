@@ -52,10 +52,15 @@ class Experiment:
         self.proxy_server.start()
         executions_total: int = len(self.queries) * len(self.configs) * self.replication
         executions_done: int = 1
+        skip_remaining: bool = False
         for config_path in self.configs:
+            if skip_remaining:
+                break
             info(f'Execute with config: "{config_path}"')
             config_results: Dict[str, List[Dict[str, Any]]] = {}
             for query_id, query_string in self.queries.items():
+                if skip_remaining:
+                    break
                 query_results: List[Dict[str, Any]] = []
                 for i in range(0, self.replication):
                     info(f"Query {executions_done} / {executions_total} <{query_id}>")
@@ -66,6 +71,7 @@ class Experiment:
                         executions_done += 1
                     except KeyboardInterrupt:
                         info("Interrupted by user, will skip remaining queries")
+                        skip_remaining = True
                 config_results[query_id] = query_results
             results[config_path.as_posix()] = config_results
         self.serialize_results(results)

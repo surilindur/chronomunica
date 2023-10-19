@@ -67,6 +67,9 @@ class ChronomunicaResults:
                 result_times[query_id][config_id] = average_arrivals
         return result_times
 
+    def make_diefficiency_y_axis(length: int) -> List[int]:
+        return list(range(1, length + 1))
+
     def plot_diefficiency(self, suffix: str = "png") -> None:
         fig: Figure = figure(dpi=600)
         output_path: Path = self.path.parent.joinpath(f"{self.path.stem}.{suffix}")
@@ -76,14 +79,13 @@ class ChronomunicaResults:
         plot_rows: int = ceil(total_plots / plot_cols)
         fig.set_size_inches(plot_cols * 6, plot_rows * 6)
         info(f"Plotting into {plot_cols} x {plot_rows} grid")
-        make_y = lambda n: range(1, n + 1)
         subplot_index: int = 1
         for query, query_data in result_times.items():
             ax: Axes = fig.add_subplot(plot_rows, plot_cols, subplot_index)
             for config, arrival_times in query_data.items():
                 ax.step(
                     x=arrival_times,
-                    y=make_y(len(arrival_times)),
+                    y=self.make_diefficiency_y_axis(len(arrival_times)),
                     where="post",
                     label=config,
                 )

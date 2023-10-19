@@ -37,7 +37,7 @@ def setup_logging(level: str, path: Optional[Path]) -> None:
 def parse_arguments() -> ArgumentNamespace:
     parser = ArgumentParser(
         prog="chronomunica",
-        description="Minimal benchmark runner and result visualizer for Comunica clients",
+        description="Minimal benchmark runner for Comunica clients",
         epilog="Please feel free to report any issues on GitHub",
         allow_abbrev=False,
     )
