@@ -35,24 +35,22 @@ def setup_logging(level: str, path: Optional[Path]) -> None:
 
 
 def parse_arguments() -> ArgumentNamespace:
-    argument_parser = ArgumentParser(
+    parser = ArgumentParser(
         prog="chronomunica",
-        description="Minimal benchmark runner for Comunica clients",
+        description="Minimal benchmark runner and result visualizer for Comunica clients",
         epilog="Please feel free to report any issues on GitHub",
         allow_abbrev=False,
     )
 
-    argument_parser.add_argument(
-        "--log-level", choices=log_levels.keys(), default="info"
-    )
+    parser.add_argument("--log-level", choices=log_levels.keys(), default="info")
 
-    argument_parser.add_argument("--log-file", required=False, type=Path)
+    parser.add_argument("--log-file", required=False, type=Path)
 
-    group = argument_parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--experiment", type=Path)
-    group.add_argument("--plot", type=Path)
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--experiment", type=Path, help="Path to an experiment manifest")
+    group.add_argument("--plot", type=Path, help="Path to query result file to plot")
 
-    args = argument_parser.parse_args(namespace=ArgumentNamespace)
+    args = parser.parse_args(namespace=ArgumentNamespace)
 
     setup_logging(level=args.log_level, path=args.log_file)
 
