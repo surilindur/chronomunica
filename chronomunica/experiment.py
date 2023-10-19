@@ -59,8 +59,13 @@ class Experiment:
                 query_results: List[Dict[str, Any]] = []
                 for i in range(0, self.replication):
                     info(f"Query {executions_done} / {executions_total} <{query_id}>")
-                    query_results.append(self.execute_query(query_string, config_path))
-                    executions_done += 1
+                    try:
+                        query_results.append(
+                            self.execute_query(query_string, config_path)
+                        )
+                        executions_done += 1
+                    except KeyboardInterrupt:
+                        info("Interrupted by user, will skip remaining queries")
                 config_results[query_id] = query_results
             results[config_path.as_posix()] = config_results
         self.serialize_results(results)
