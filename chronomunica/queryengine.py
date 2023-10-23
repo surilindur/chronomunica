@@ -1,15 +1,18 @@
-from json import dumps, loads
+from json import dumps, loads, JSONDecodeError
 from pathlib import Path
 from time import time_ns
+from logging import error, exception
 from datetime import timedelta, datetime
 from typing import Optional, Dict, Any
 from subprocess import Popen, PIPE
 from hashlib import sha256
 from threading import Timer
+from re import Pattern, Match, compile
 
 from utils import parse_path
 
 TIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
+RESULT_PATTERN: Pattern = compile(r"(?P<result>{.*})")
 
 
 class QueryEngine:
@@ -31,6 +34,7 @@ class QueryEngine:
 
         unknown_output: Dict[int, str] = {}
         result_bindings: Dict[int, Any] = {}
+        timeout_reached: bool = False
 
         time_start: datetime = datetime.utcnow()
 
@@ -57,10 +61,15 @@ class QueryEngine:
             elif line.endswith("]"):
                 # when the result bindings are done, the reading loop can be terminated
                 break
-            elif line.startswith("{") and line.endswith("}"):
-                query_result = loads(line)
-                result_bindings[ns_line] = query_result
-            else:
+            line_match: Match[str] | None = RESULT_PATTERN.match(line)
+            if line_match:
+                query_result: str = line_match.group("result")
+                try:
+                    result_bindings[ns_line] = loads(query_result)
+                except JSONDecodeError as ex:
+                    exception(ex)
+                line = line.replace(query_result, "").strip()
+            if line:
                 unknown_output[ns_line] = line
 
         time_end: datetime = datetime.utcnow()
@@ -69,18 +78,22 @@ class QueryEngine:
         returncode = proc.poll()
         proc.terminate()
 
-        if returncode:
-            raise TimeoutError(
-                f"Timeout at {timeout.total_seconds()} seconds (code {returncode})"
-            )
+        if returncode and returncode != 1:
+            error(f"Timeout reached after {timeout.total_seconds()} seconds")
+            timeout_reached = True
+
+        result_dumps = sorted(
+            dumps(obj=r, sort_keys=True, ensure_ascii=False)
+            for r in result_bindings.values()
+        )
 
         result_hash = sha256(usedforsecurity=False)
-        result_dumps = sorted(dumps(r) for r in result_bindings.values())
 
         for result_dump in result_dumps:
             result_hash.update(result_dump.encode())
 
         return {
+            "timeout": timeout_reached,
             "time_start": time_start.strftime(TIME_FORMAT),
             "time_end": time_end.strftime(TIME_FORMAT),
             "time_taken": (time_end - time_start).total_seconds(),

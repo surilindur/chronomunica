@@ -4,7 +4,8 @@ from threading import Thread
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.client import HTTPResponse
-from urllib.error import HTTPError
+from urllib.parse import quote_plus
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 
@@ -47,40 +48,44 @@ class ProxyServer:
                         k: v for k, v in self.headers.items() if k.lower() != "host"
                     }
                     request: Request = Request(
-                        url=target_url,
+                        url=quote_plus(target_url),
                         headers=proxied_headers,
                         method=self.command,
                     )
-                    response: HTTPResponse = urlopen(request)
-                    self.send_response(code=response.status)
-                    for k, v in response.headers.items():
-                        if k.lower() not in IGNORE_HEADERS:
-                            self.send_header(
-                                k,
-                                v.replace(proxy_base, listen_base)
-                                if isinstance(v, str) and proxy_base in v
-                                else v,
-                            )
-                    self.end_headers()
-                    if response.chunked and response.chunk_left:
-                        while response.chunk_left:
+                    with urlopen(request) as response:
+                        response: HTTPResponse = response
+                        self.send_response(code=response.status)
+                        for k, v in response.headers.items():
+                            if k.lower() not in IGNORE_HEADERS:
+                                self.send_header(
+                                    k,
+                                    v.replace(proxy_base, listen_base)
+                                    if isinstance(v, str) and proxy_base in v
+                                    else v,
+                                )
+                        self.end_headers()
+                        if response.chunked and response.chunk_left:
+                            while response.chunk_left:
+                                self.wfile.write(
+                                    response.read(response.chunk_left)
+                                    .decode()
+                                    .replace(proxy_base, listen_base)
+                                    .encode()
+                                )
+                        else:
                             self.wfile.write(
-                                response.read(response.chunk_left)
+                                response.read()
                                 .decode()
                                 .replace(proxy_base, listen_base)
                                 .encode()
                             )
-                    else:
-                        self.wfile.write(
-                            response.read()
-                            .decode()
-                            .replace(proxy_base, listen_base)
-                            .encode()
-                        )
                 except HTTPError as ex:
                     self.send_error(ex.code)
                 except ConnectionResetError as ex:
                     self.send_error(HTTPStatus.BAD_GATEWAY.value)
+                except URLError as ex:
+                    error(ex)
+                    self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
                 except Exception as ex:
                     exception(ex)
                     self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
@@ -109,7 +114,7 @@ class ProxyServer:
                 debug(format, *args)
 
             def log_error(self, format: str, *args: Any) -> None:
-                error("{}".format(args[0], f"{proxy_base}{self.path}"))
+                error(f"{args[0]} {proxy_base}{self.path}")
 
         self.server = ThreadingHTTPServer((host, port), ProxyHTTPRequestHandler)
         self.thread = Thread(target=self.server.serve_forever, daemon=True)
