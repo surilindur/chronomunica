@@ -10,12 +10,9 @@ log_levels: Dict[str, int] = {"info": INFO, "error": ERROR, "debug": DEBUG}
 class ArgumentNamespace(Namespace):
     log_level: str
     log_file: Optional[Path]
-    experiment: Path | None
-    plot: Path | None
-
-
-def parse_path(path: str) -> Path:
-    return Path(path.removeprefix("file://")).resolve()
+    experiment: Optional[Path]
+    plot: Optional[Path]
+    create: Optional[Path]
 
 
 def setup_logging(level: str, path: Optional[Path]) -> None:
@@ -47,6 +44,7 @@ def parse_arguments() -> ArgumentNamespace:
     parser.add_argument("--log-file", required=False, type=Path)
 
     group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--create", type=Path, help="Create experiment manifest at path")
     group.add_argument("--experiment", type=Path, help="Path to an experiment manifest")
     group.add_argument("--plot", type=Path, help="Path to query result file to plot")
 

@@ -1,10 +1,9 @@
 from logging import info, debug, error, exception
-from typing import Any, List, Dict, Set
+from typing import Any, List, Set
 from threading import Thread
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from http.client import HTTPResponse
-from urllib.parse import quote_plus
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -20,22 +19,14 @@ IGNORE_HEADERS: Set[str] = set(
 
 
 class ProxyServer:
-    urls: List[str]
-    thread: Thread
-    server: ThreadingHTTPServer
-
-    def __init__(self, config: Dict[str, str | int]) -> None:
-        host: str = config["proxy_host"]
-        port: int = int(config["proxy_port"])
-        upstream_host: str = config["upstream_host"]
-        upstream_port: int = int(config["upstream_port"])
-        protocol: str = "http"
-
+    def __init__(
+        self, host: str, port: int, upstream_host: str, upstream_port: int
+    ) -> None:
         proxied_urls: List[str] = []
-        self.urls = proxied_urls
+        self.urls: List[str] = proxied_urls
 
-        listen_base = f"{protocol}://{host}:{port}"
-        proxy_base = f"{protocol}://{upstream_host}:{upstream_port}"
+        listen_base: str = f"http://{host}:{port}"
+        proxy_base: str = f"http://{upstream_host}:{upstream_port}"
 
         info(f"Proxy server: <{listen_base}> to <{proxy_base}>")
 
@@ -48,7 +39,7 @@ class ProxyServer:
                         k: v for k, v in self.headers.items() if k.lower() != "host"
                     }
                     request: Request = Request(
-                        url=quote_plus(target_url),
+                        url=target_url,
                         headers=proxied_headers,
                         method=self.command,
                     )
@@ -116,8 +107,11 @@ class ProxyServer:
             def log_error(self, format: str, *args: Any) -> None:
                 error(f"{args[0]} {proxy_base}{self.path}")
 
-        self.server = ThreadingHTTPServer((host, port), ProxyHTTPRequestHandler)
-        self.thread = Thread(target=self.server.serve_forever, daemon=True)
+        self.server: ThreadingHTTPServer = ThreadingHTTPServer(
+            (host, port), ProxyHTTPRequestHandler
+        )
+
+        self.thread: Thread = Thread(target=self.server.serve_forever, daemon=True)
 
     def start(self) -> None:
         info("Starting proxy server")

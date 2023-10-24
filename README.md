@@ -5,7 +5,7 @@
 <p align="center">
     <a href="https://github.com/surilindur/chronomunica/actions"><img alt="Actions Status" src="https://github.com/surilindur/chronomunica/actions/workflows/ci.yml/badge.svg"></a>
     <a href="https://python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.11-blue.svg"></a>
-    <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-brightgreen.svg"></a>
+    <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
     <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/Code%20Style-black-000000.svg"></a>    
 </p>
 
@@ -21,17 +21,33 @@ Currently, the tool will output:
 
 ## Usage
 
-    TODO
+The tool is not published anywhere and will not be published anywhere, so it can be set up by cloning the repository and installing the dependencies in a virtual environment. After that, creating a new experiment manifest is possible via:
+
+```bash
+python app.py --create .../path/to/manifest.json
+```
+
+The manifest can then be executed:
+
+```bash
+python app.py --experiment .../path/to/manifest.json
+```
+
+Manual configuration is always necessary, as is setting up the server to which requests are proxied.
 
 ## Docker
 
 There is a Dockerfile provided, which can be built:
 
-    $ docker build --network host --tag chronomunica:dev .
+```bash
+docker build --network host --tag chronomunica:dev .
+```
 
 The file can then be used to run the utility:
 
-    $ docker run --network host chronomunica:dev --help
+```bash
+docker run --network host chronomunica:dev --help
+```
 
 The Docker image used for the query engine can then be based on this one.
 

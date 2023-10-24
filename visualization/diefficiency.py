@@ -10,8 +10,10 @@ from matplotlib.figure import Figure
 from matplotlib.pyplot import figure
 from matplotlib.colors import Colormap
 
+
 # Time is recorded in nanoseconds
 TIME_DIVISOR: int = 1000 * 1000 * 1000
+IMAGE_EXTENSION: str = "svg"
 
 
 class ChronomunicaResult:
@@ -127,7 +129,7 @@ class ChronomunicaResults:
         plot_rows: int = ceil(subplots / plot_cols)
         return plot_rows, plot_cols
 
-    def plot_diefficiency(self, suffix: str = "png") -> None:
+    def plot_diefficiency(self, suffix: str = IMAGE_EXTENSION) -> None:
         fig: Figure = figure(dpi=300)
         output_path: Path = self.path.parent.joinpath(
             f"{self.path.stem}-diefficiency.{suffix}"
