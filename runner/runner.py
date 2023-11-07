@@ -21,6 +21,7 @@ class ExperimentRunner:
         self.query_engine: QueryEngine = QueryEngine(
             cwd=self.experiment.query_engine_cwd,
             bin=self.experiment.query_engine_bin,
+            node=self.experiment.query_engine_node,
             env=self.experiment.query_engine_environment,
             context=self.experiment.query_engine_context,
         )
@@ -33,9 +34,12 @@ class ExperimentRunner:
         )
         info(f"Executing a total of {executions_total} experiments")
         seconds = self.experiment.query_engine_timeout * executions_total
-        hours, remainder = divmod(seconds, 60 * 60)
+        days, remainder = divmod(seconds, 60 * 60 * 24)
+        hours, remainder = divmod(remainder, 60 * 60)
         minutes, seconds = divmod(remainder, 60)
-        info(f"Maximum duration {hours} hours {minutes} minutes {seconds} seconds")
+        info(
+            f"Maximum duration {days} days {hours} hours {minutes} minutes {seconds} seconds"
+        )
         return executions_total
 
     def execute(self) -> None:

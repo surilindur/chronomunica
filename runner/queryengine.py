@@ -31,7 +31,7 @@ class QueryEngine:
     def query_bindings(
         self, query_id: str, query_string: str, timeout: timedelta, config_path: Path
     ) -> Result:
-        result: Result = Result(config=config_path.as_posix(), query=query_id)
+        result: Result = Result(config=config_path.as_uri(), query=query_id)
 
         args: List[str] = [
             self.node.as_posix(),
