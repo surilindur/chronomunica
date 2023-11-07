@@ -12,7 +12,7 @@ def check_result_consistency(results: Path) -> None:
     for result_path in results.iterdir():
         with open(result_path, "r") as result_file:
             data = loads(result_file.read())
-        if data["engine_timeout_reached"] == True:
+        if data["engine_timeout_reached"] is True:
             continue
         config: str = data["engine_config"]
         query: str = data["engine_query"]

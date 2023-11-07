@@ -33,13 +33,20 @@ class ExperimentRunner:
             * self.experiment.replication
         )
         info(f"Executing a total of {executions_total} experiments")
+        duration: str = "Maximum duration"
         seconds = self.experiment.query_engine_timeout * executions_total
         days, remainder = divmod(seconds, 60 * 60 * 24)
+        if days > 0:
+            duration += f" {days} days"
         hours, remainder = divmod(remainder, 60 * 60)
+        if hours > 0:
+            duration += f" {hours} hours"
         minutes, seconds = divmod(remainder, 60)
-        info(
-            f"Maximum duration {days} days {hours} hours {minutes} minutes {seconds} seconds"
-        )
+        if minutes > 0:
+            duration += f" {minutes} minutes"
+        if seconds > 0:
+            duration += f" {seconds} seconds"
+        info(duration)
         return executions_total
 
     def execute(self) -> None:
