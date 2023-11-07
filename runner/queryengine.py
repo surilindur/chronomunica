@@ -3,7 +3,7 @@ from pathlib import Path
 from time import time_ns
 from logging import error
 from datetime import timedelta
-from typing import Optional, Dict, Any, List
+from typing import Dict, Any, List
 from subprocess import Popen, PIPE
 from threading import Timer
 from re import Pattern, Match, compile
@@ -18,20 +18,27 @@ class QueryEngine:
         self,
         cwd: Path,
         bin: Path,
+        node: Path,
         env: Dict[str, str],
-        context: Optional[Dict[str, Any]],
+        context: Dict[str, Any] | None,
     ) -> None:
         self.cwd: Path = cwd
         self.bin: Path = bin
+        self.node: Path = node
         self.env: Dict[str, str] = env
-        self.context: Optional[str] = dumps(context) if context else None
+        self.context: str | None = dumps(context) if context else None
 
     def query_bindings(
         self, query_id: str, query_string: str, timeout: timedelta, config_path: Path
     ) -> Result:
         result: Result = Result(config=config_path.as_posix(), query=query_id)
 
-        args: List[str] = ["node", self.bin.as_posix(), "--query", query_string]
+        args: List[str] = [
+            self.node.as_posix(),
+            self.bin.as_posix(),
+            "--query",
+            query_string,
+        ]
 
         if self.context:
             args.append("--context")
@@ -73,7 +80,7 @@ class QueryEngine:
         result.end()
         timer.cancel()
 
-        returncode: Optional[int] = proc.poll()
+        returncode: int | None = proc.poll()
 
         proc.terminate()
 

@@ -1,8 +1,8 @@
 from json import JSONDecodeError, loads, dumps
 from datetime import datetime
-from logging import error
+from logging import debug
 from pathlib import Path
-from typing import Optional, Dict, Any, List, TYPE_CHECKING
+from typing import Dict, Any, List, TYPE_CHECKING
 from hashlib import md5
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ class Result:
         self.results: Dict[int, Any] = {}
         self.other: Dict[int, str] = {}
         self.urls: List[str] = []
-        self.stderr: Optional[str] = None
+        self.stderr: str | None = None
         self.timeout: bool = False
 
     def begin(self) -> None:
@@ -32,7 +32,7 @@ class Result:
         try:
             self.results[timestamp] = loads(result)
         except JSONDecodeError as ex:
-            error(ex)
+            debug(ex)
             self.other[timestamp] = (
                 result
                 if timestamp not in self.other

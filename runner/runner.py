@@ -1,6 +1,5 @@
 from pathlib import Path
 from logging import exception, info
-from typing import Optional
 from datetime import timedelta
 
 from experiment.experiment import Experiment
@@ -51,13 +50,14 @@ class ExperimentRunner:
             for config_path in self.experiment.configs:
                 for i in range(0, self.experiment.replication):
                     info(f"Execute {exec_done} / {exec_total} <file://{config_path}>")
-                    result: Optional[Result] = self.execute_query(
+                    result: Result | None = self.execute_query(
                         query_id=query_id,
                         query_string=query_string,
                         config_path=config_path,
                         timeout=query_timeout,
                     )
                     if result:
+                        info(f"Finished with {len(result.results)} results")
                         save_result(self.experiment.results, result)
                     exec_done += 1
         self.proxy_server.stop()
@@ -68,7 +68,7 @@ class ExperimentRunner:
         query_string: str,
         config_path: Path,
         timeout: timedelta,
-    ) -> Optional[Result]:
+    ) -> Result | None:
         try:
             result: Result = self.query_engine.query_bindings(
                 query_id=query_id,

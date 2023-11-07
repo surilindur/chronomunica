@@ -32,6 +32,7 @@ class ProxyServer:
 
         class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
             def proxy_request(self) -> None:
+                response: HTTPResponse | None = None
                 try:
                     target_url = f"{proxy_base}{self.path}"
                     proxied_urls.append(target_url)
@@ -43,33 +44,32 @@ class ProxyServer:
                         headers=proxied_headers,
                         method=self.command,
                     )
-                    with urlopen(request) as response:
-                        response: HTTPResponse = response
-                        self.send_response(code=response.status)
-                        for k, v in response.headers.items():
-                            if k.lower() not in IGNORE_HEADERS:
-                                self.send_header(
-                                    k,
-                                    v.replace(proxy_base, listen_base)
-                                    if isinstance(v, str) and proxy_base in v
-                                    else v,
-                                )
-                        self.end_headers()
-                        if response.chunked and response.chunk_left:
-                            while response.chunk_left:
-                                self.wfile.write(
-                                    response.read(response.chunk_left)
-                                    .decode()
-                                    .replace(proxy_base, listen_base)
-                                    .encode()
-                                )
-                        else:
+                    response: HTTPResponse = urlopen(request)
+                    self.send_response(code=response.status)
+                    for k, v in response.headers.items():
+                        if k.lower() not in IGNORE_HEADERS:
+                            self.send_header(
+                                k,
+                                v.replace(proxy_base, listen_base)
+                                if isinstance(v, str) and proxy_base in v
+                                else v,
+                            )
+                    self.end_headers()
+                    if response.chunked and response.chunk_left:
+                        while response.chunk_left:
                             self.wfile.write(
-                                response.read()
+                                response.read(response.chunk_left)
                                 .decode()
                                 .replace(proxy_base, listen_base)
                                 .encode()
                             )
+                    else:
+                        self.wfile.write(
+                            response.read()
+                            .decode()
+                            .replace(proxy_base, listen_base)
+                            .encode()
+                        )
                 except HTTPError as ex:
                     self.send_error(ex.code)
                 except ConnectionResetError as ex:
@@ -80,6 +80,9 @@ class ProxyServer:
                 except Exception as ex:
                     exception(ex)
                     self.send_error(HTTPStatus.INTERNAL_SERVER_ERROR.value)
+                finally:
+                    if response and not response.closed:
+                        response.close()
 
             def send_error(
                 self, code: int, message: str | None = None, explain: str | None = None
@@ -114,13 +117,13 @@ class ProxyServer:
         self.thread: Thread = Thread(target=self.server.serve_forever, daemon=True)
 
     def start(self) -> None:
-        info("Starting proxy server")
         self.thread.start()
+        info("Started proxy server")
 
     def stop(self) -> None:
-        info("Shutting down proxy server")
         self.server.shutdown()
         self.thread.join()
+        info("Stopped proxy server")
 
     def reset(self) -> List[str]:
         urls = list(u for u in self.urls)

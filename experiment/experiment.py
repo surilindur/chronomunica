@@ -22,6 +22,7 @@ class Experiment:
             "results": self.results.as_posix(),
             "query_engine_cwd": self.query_engine_cwd.as_posix(),
             "query_engine_bin": self.query_engine_bin.as_posix(),
+            "query_engine_node": self.query_engine_node.as_posix(),
             "query_engine_timeout": self.query_engine_timeout,
             "query_engine_context": self.query_engine_context,
             "query_engine_environment": self.query_engine_environment,
@@ -48,6 +49,7 @@ class Experiment:
         self.query_engine_timeout: int = 60
         self.query_engine_cwd: Path = cwd
         self.query_engine_bin: Path = cwd.joinpath("bin", "query.js")
+        self.query_engine_node: Path = Path("/usr/bin/node").resolve()
         self.query_engine_context: Dict[str, Any] = {"sources": [], "lenient": True}
         self.query_engine_environment: Dict[str, str] = {
             "NODE_OPTIONS": "--max-old-space-size=8192",
@@ -65,7 +67,7 @@ class Experiment:
             data = loads(manifest_file.read())
         # Common options
         self.queries: List[Path] = list(Path(p).resolve() for p in data["queries"])
-        self.configs: List[Path] = list(Path(p) for p in data["configs"])
+        self.configs: List[Path] = list(Path(p).resolve() for p in data["configs"])
         self.results: Path = Path(data["results"]).resolve()
         self.replication: int = data["replication"]
         # Proxy server section
@@ -77,6 +79,7 @@ class Experiment:
         self.query_engine_timeout: int = data["query_engine_timeout"]
         self.query_engine_cwd: Path = Path(data["query_engine_cwd"]).resolve()
         self.query_engine_bin: Path = Path(data["query_engine_bin"]).resolve()
+        self.query_engine_node: Path = Path(data["query_engine_node"]).resolve()
         self.query_engine_context: Dict[str, Any] = data["query_engine_context"]
         self.query_engine_environment: Dict[str, str] = data["query_engine_environment"]
         # Load individual query strings for queries from the files

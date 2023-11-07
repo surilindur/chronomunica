@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, Namespace
 from logging import basicConfig, info, INFO, ERROR, DEBUG
-from typing import Dict, Optional
+from typing import Dict
 from pathlib import Path
 from sys import stdout
 
@@ -9,13 +9,13 @@ log_levels: Dict[str, int] = {"info": INFO, "error": ERROR, "debug": DEBUG}
 
 class ArgumentNamespace(Namespace):
     log_level: str
-    log_file: Optional[Path]
-    experiment: Optional[Path]
-    plot: Optional[Path]
-    create: Optional[Path]
+    log_file: Path | None
+    experiment: Path | None
+    plot: Path | None
+    create: Path | None
 
 
-def setup_logging(level: str, path: Optional[Path]) -> None:
+def setup_logging(level: str, path: Path | None) -> None:
     log_target_args = (
         {"filename": path, "filemode": "w", "encoding": "utf-8"}
         if path
